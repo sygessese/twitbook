@@ -1,12 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import Form from "./Form";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_email: "",
+      user_password: "",
+      type: "signup"
+    };
+  }
+
+  //changeType() {}
+
   render() {
-    return (
-      <div>
-        <h1>Hello World! Sincerly, React</h1>
-      </div>
-    );
+    return <Form />;
   }
 }
 export default App;
