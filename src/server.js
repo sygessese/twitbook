@@ -9,7 +9,7 @@ import cors from "cors";
 // import itemRouter from './resources/item/item.router'
 // import listRouter from './resources/list/list.router'
 import path from "path";
-import { connect } from "mongoose";
+import { connect } from "./db/db";
 
 export const app = express();
 
@@ -30,7 +30,7 @@ export const start = async () => {
     app.listen(config.port, () => {
       console.log(`Server listening on port ${config.port}`);
     });
-  } catch {
+  } catch (e) {
     console.error(e);
   }
 };

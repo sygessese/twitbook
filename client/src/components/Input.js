@@ -13,19 +13,23 @@ class Input extends React.Component {
     desc: PropTypes.string,
     errMessage: PropTypes.string
   };
+
   state = {
     error: "",
     data: ""
   };
+
   handleChange = ev => {
     const { errMessage, name, notify, pattern } = this.props;
     const error = validate(ev.target.value, errMessage, pattern);
     notify(name, error === "");
     this.setState({ data: ev.target.value, error });
   };
+
   render() {
     const { error, data } = this.state;
     const { desc } = this.props;
+
     return (
       <InputContainer>
         {error && <ErrorMessage>{error}</ErrorMessage>}
