@@ -3,11 +3,10 @@ import { json, urlencoded } from "body-parser";
 import morgan from "morgan";
 import config from "./config";
 import cors from "cors";
-// import { signup, signin, protect } from './utils/auth'
-// import { connect } from './utils/db'
-// import userRouter from './resources/user/user.router'
-// import itemRouter from './resources/item/item.router'
-// import listRouter from './resources/list/list.router'
+import { signup, signin, protect } from "./auth";
+import usersRouter from "./users/user.router";
+import postsRouter from "./posts/post.router";
+import threadsRouter from "./threads/thread.router";
 import path from "path";
 import { connect } from "./db/db";
 
@@ -24,6 +23,14 @@ app.use(
   express.static(path.join(__dirname, "../client/dist/bundle.js"))
 );
 
+// app.post("/signin", signin);
+// app.post("/signup", signup);
+
+// app.use('/api', protect);
+app.use("/api/posts", postsRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/threads", threadsRouter);
+
 export const start = async () => {
   try {
     await connect();
@@ -34,3 +41,12 @@ export const start = async () => {
     console.error(e);
   }
 };
+
+// post = {content: 'hi', createdBy: user_id, thread: thread_id }
+// thread = {name: 'hiking is funnn', description: 'lets talk bout outdoorsie', createdBy: user_id}
+// user = {email: 'hehe@hehe.com', password: 'astring', username: 'coolio'}
+
+// 5e6cadbc5497f9ae12108a2a thread id
+// 5e6cab7f3bd21baca222cca8 user id
+
+// { "content": "hi this is a message", "createdBy": "5e6cab7f3bd21baca222cca8", "thread": "5e6cadbc5497f9ae12108a2a"}

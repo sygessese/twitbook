@@ -18,3 +18,6 @@ class App extends Component {
   }
 }
 export default App;
+
+
+// if this.state.isauthnenticated, render authenticatedApp, else render preauthenticatedApp
