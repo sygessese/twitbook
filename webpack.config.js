@@ -1,11 +1,11 @@
-var path = require('path');
-var SRC_DIR = path.join(__dirname, '/client/src');
-var DIST_DIR = path.join(__dirname, '/client/dist');
+var path = require("path");
+var SRC_DIR = path.join(__dirname, "/client/src");
+var DIST_DIR = path.join(__dirname, "/client/dist");
 
 module.exports = {
   entry: `${SRC_DIR}/index.js`,
   output: {
-    filename: 'bundle.js',
+    filename: "bundle.js",
     path: DIST_DIR
   },
   module: {
@@ -14,12 +14,15 @@ module.exports = {
         test: /\.m?js$/,
         include: SRC_DIR,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/env', '@babel/preset-react'],
+            presets: ["@babel/env", "@babel/preset-react"]
           }
         }
       }
     ]
+  },
+  devServer: {
+    historyApiFallback: true
   }
 };

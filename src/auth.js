@@ -4,9 +4,13 @@ import jwt from "jsonwebtoken";
 
 // returns new token, stores user id
 export const newToken = user => {
-  return jwt.sign({ id: user.id }, config.secrets.jwt, {
-    expiresIn: config.secrets.jwtExp
-  });
+  return jwt.sign(
+    { id: user.id, username: user.username },
+    config.secrets.jwt,
+    {
+      expiresIn: config.secrets.jwtExp
+    }
+  );
 };
 
 // checks token is alive, returns user
@@ -20,6 +24,7 @@ export const verifyToken = token =>
 
 // creates new user, creates new token, returns token
 export const signup = async (req, res) => {
+  console.log(req.body);
   if (!req.body.email || !req.body.password) {
     return res.status(400).send({ message: "need email and password" });
   }
@@ -27,23 +32,31 @@ export const signup = async (req, res) => {
   try {
     const user = await User.create(req.body);
     const token = newToken(user);
-    return res.status(201).send({ token });
+    return res.status(201).send({ token, username: user.username });
   } catch (e) {
-    return res.status(500).end();
+    let error;
+    if (e.errmsg.indexOf("username_1") !== -1) {
+      error =
+        "ERROR: There is already an account associated with this username";
+    }
+    if (e.errmsg.indexOf("email_1") !== -1) {
+      error = "ERROR: There is already an account associated with this email";
+    }
+    return res.status(500).send(error);
   }
 };
 
 // finds user by email, checks password, creates new token, returns token
-export const signin = async (req, res) => {
-  if (!req.body.email || !req.body.password) {
-    return res.status(400).send({ message: "need email and password" });
+export const login = async (req, res) => {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).send({ message: "need username and password" });
   }
 
-  const invalid = { message: "Invalid email and passoword combination" };
+  const invalid = { message: "Invalid username and passoword combination" };
 
   try {
-    const user = await User.findOne({ email: req.body.email })
-      .select("email password")
+    const user = await User.findOne({ username: req.body.username })
+      .select("email password username")
       .exec();
 
     if (!user) {
@@ -57,7 +70,7 @@ export const signin = async (req, res) => {
     }
 
     const token = newToken(user);
-    return res.status(201).send({ token });
+    return res.status(201).send({ token, username: user.username });
   } catch (e) {
     console.error(e);
     res.status(500).end();
@@ -93,3 +106,7 @@ export const protect = async (req, res, next) => {
   req.user = user;
   next();
 };
+
+// sign in needs username and password
+// sign up needs email, username and password
+// protect needs bearer token in header, attaches user to req as property

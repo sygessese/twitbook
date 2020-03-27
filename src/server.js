@@ -3,7 +3,7 @@ import { json, urlencoded } from "body-parser";
 import morgan from "morgan";
 import config from "./config";
 import cors from "cors";
-import { signup, signin, protect } from "./auth";
+import { signup, login, protect } from "./auth";
 import usersRouter from "./users/user.router";
 import postsRouter from "./posts/post.router";
 import threadsRouter from "./threads/thread.router";
@@ -17,19 +17,19 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-app.use("/", express.static(path.join(__dirname, "../client/dist")));
-app.use(
-  "/bundle",
-  express.static(path.join(__dirname, "../client/dist/bundle.js"))
-);
-
-// app.post("/signin", signin);
-// app.post("/signup", signup);
+app.post("/login", login);
+app.post("/signup", signup);
 
 // app.use('/api', protect);
 app.use("/api/posts", postsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/threads", threadsRouter);
+
+app.use(
+  "/bundle",
+  express.static(path.join(__dirname, "../client/dist/bundle.js"))
+);
+app.use("/*", express.static(path.join(__dirname, "../client/dist")));
 
 export const start = async () => {
   try {
