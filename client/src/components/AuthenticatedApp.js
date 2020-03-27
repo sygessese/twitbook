@@ -1,7 +1,8 @@
 import React from "react";
 import LoginStore from "../stores/LoginStore";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import AuthService from "../services/AuthService";
+import { Menu } from "semantic-ui-react";
 
 export default class AuthenticatedApp extends React.Component {
   constructor() {
@@ -31,14 +32,7 @@ export default class AuthenticatedApp extends React.Component {
   render() {
     return (
       <div className="container">
-        <nav className="navbar navbar-default">
-          <div className="navbar-header">
-            <a className="navbar-brand" href="/">
-              React Flux app with JWT authentication
-            </a>
-          </div>
-          {this.headerItems}
-        </nav>
+        {this.headerItems}
         {this.props.children}
       </div>
     );
@@ -52,31 +46,26 @@ export default class AuthenticatedApp extends React.Component {
   get headerItems() {
     if (!this.state.userLoggedIn) {
       return (
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-            <Link to="login">Login</Link>
-          </li>
-          <li>
-            <Link to="signup">Signup</Link>
-          </li>
-        </ul>
+        <Menu>
+          <Menu.Item as={Nav} to="/login" name="Login" />
+          <Menu.Item as={Nav} to="/signup" name="signup" />
+        </Menu>
       );
     } else {
       return (
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-            <Link to="home">Home</Link>
-          </li>
-          <li>
-            <Link to="threads">Threads</Link>
-          </li>
-          <li>
-            <a href="" onClick={this.logout}>
+        <Menu>
+          <Menu.Item as={Nav} to="/home" name="Home" />
+          <Menu.Item as={Nav} to="/threads" name="Threads" />
+          <Menu.Menu position="right">
+            <Menu.Item name="logout" onClick={this.logout}>
               Logout
-            </a>
-          </li>
-        </ul>
+            </Menu.Item>
+          </Menu.Menu>
+        </Menu>
       );
     }
   }
 }
+
+// handles active class
+const Nav = props => <NavLink exact {...props} activeClassName="active" />;

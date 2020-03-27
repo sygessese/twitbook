@@ -36,6 +36,7 @@
     "react-router-dom": "^5.1.2",
     "reqwest": "^2.0.5",
     "rimraf": "^3.0.2",
+    "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
