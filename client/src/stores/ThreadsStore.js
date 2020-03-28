@@ -9,18 +9,18 @@ class ThreadsStore extends BaseStore {
   constructor() {
     super();
     this.subscribe(() => this._registerToActions.bind(this));
-    this.threads = "";
+    this._threads = "";
   }
 
   // todo; add threads_add, threads_delete
   _registerToActions(action) {
     switch (action.actionType) {
       case THREADS_GET:
-        this.threads = action.threads;
+        this._threads = action.threads;
         this.emitChange();
         break;
       case LOGOUT_USER:
-        this.threads = null;
+        this._threads = null;
         this.emitChange();
         break;
       default:
@@ -28,8 +28,8 @@ class ThreadsStore extends BaseStore {
     }
   }
 
-  get thread() {
-    return this.threads;
+  get threads() {
+    return this._threads;
   }
 }
 

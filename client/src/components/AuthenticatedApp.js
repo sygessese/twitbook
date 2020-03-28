@@ -2,7 +2,7 @@ import React from "react";
 import LoginStore from "../stores/LoginStore";
 import { Link, NavLink } from "react-router-dom";
 import AuthService from "../services/AuthService";
-import { Menu } from "semantic-ui-react";
+import { Menu, Input, Dropdown } from "semantic-ui-react";
 
 export default class AuthenticatedApp extends React.Component {
   constructor() {
@@ -46,20 +46,32 @@ export default class AuthenticatedApp extends React.Component {
   get headerItems() {
     if (!this.state.userLoggedIn) {
       return (
-        <Menu>
+        <Menu color="teal" fluid>
           <Menu.Item as={Nav} to="/login" name="Login" />
           <Menu.Item as={Nav} to="/signup" name="signup" />
         </Menu>
       );
     } else {
       return (
-        <Menu>
+        <Menu color="teal" fluid>
           <Menu.Item as={Nav} to="/home" name="Home" />
           <Menu.Item as={Nav} to="/threads" name="Threads" />
+
           <Menu.Menu position="right">
-            <Menu.Item name="logout" onClick={this.logout}>
-              Logout
+            <Menu.Item>
+              <Input
+                className="icon"
+                icon="search"
+                placeholder="Find friends..."
+              />
             </Menu.Item>
+            <Dropdown item text={LoginStore.user} simple>
+              <Dropdown.Menu>
+                <Dropdown.Item name="logout" onClick={this.logout}>
+                  Logout
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu.Menu>
         </Menu>
       );

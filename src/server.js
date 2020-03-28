@@ -23,7 +23,7 @@ app.post("/signup", signup);
 // app.use('/api', protect);
 app.use("/api/posts", postsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/threads", threadsRouter);
+app.use("/api/threads", [protect, threadsRouter]);
 
 app.use(
   "/bundle",

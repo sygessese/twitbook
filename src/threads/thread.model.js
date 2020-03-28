@@ -13,7 +13,9 @@ const threadSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "user",
       required: true
-    }
+    },
+    createdByUsername: String,
+    comments: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

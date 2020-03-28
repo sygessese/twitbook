@@ -44,10 +44,10 @@ class AuthService {
     );
   }
 
-  // check what return object is
+  // accepts a promise (server's response to login attempt)
+  // returns a success callback - which passes server's response to Login Action
   handleAuth(loginPromise) {
     return loginPromise.then(function(response) {
-      //var jwt = response.id_token;
       LoginActions.loginUser(response);
       return true;
     });

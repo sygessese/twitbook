@@ -6,7 +6,6 @@ import Login from "./components/Login.js";
 import Signup from "./components/Signup.js";
 import Home from "./components/Home.js";
 import Threads from "./components/Threads.js";
-// import RouterContainer from "./services/RouterContainer";
 import LoginActions from "./actions/LoginActions";
 
 var Routes = () => (

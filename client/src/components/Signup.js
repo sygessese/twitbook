@@ -24,7 +24,6 @@ export default class Signup extends React.Component {
   }
 
   handleChange(e) {
-    console.log(e.target);
     this.setState({ [e.target.id]: event.target.value });
   }
 

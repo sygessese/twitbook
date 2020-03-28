@@ -8,11 +8,7 @@ router
   .route("/")
   .get(controller.getThreads)
   .post(controller.createThread)
-  .put((req, res) => {
-    res.send({ message: "thread renamed" });
-  })
-  .delete((req, res) => {
-    res.send({ message: "thread deleted" });
-  });
+  .put(controller.updateThread)
+  .delete(controller.deleteThread);
 
 export default router;

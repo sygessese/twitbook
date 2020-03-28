@@ -10,3 +10,5 @@ export default {
     });
   }
 };
+
+// given threads payload (from threads services), getThreads dispatches action and payload to store
