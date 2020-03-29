@@ -3,7 +3,7 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import ThreadsStore from "../stores/ThreadsStore.js";
 import LoginStore from "../stores/LoginStore.js";
 import ThreadsService from "../services/ThreadsService.js";
-import { Card, Icon } from "semantic-ui-react";
+import { Card, Icon, Dimmer, Loader } from "semantic-ui-react";
 import ThreadsModal from "./ThreadsModal";
 
 export default AuthenticatedComponent(
@@ -23,15 +23,17 @@ export default AuthenticatedComponent(
       }
 
       ThreadsStore.addChangeListener(this._onChange);
-      LoginStore.addChangeListener(this.reroute);
+      LoginStore.addChangeListener(this._onChange);
     }
 
     componentWillUnmount() {
       ThreadsStore.removeChangeListener(this._onChange);
+      LoginStore.removeChangeListener(this._onChange);
     }
 
     _onChange() {
       this.setState({ threads: this.getThreadsState() });
+      this.reroute();
     }
 
     reroute() {
@@ -49,17 +51,20 @@ export default AuthenticatedComponent(
     }
 
     render() {
-      console.log(this.state);
-      if (this.state.threads === "") {
-        return <h1>loading...</h1>;
+      if (!this.state.threads) {
+        return (
+          <Dimmer active inverted>
+            <Loader size="medium">Loading</Loader>
+          </Dimmer>
+        );
       } else {
         return (
           <div
             style={{
-              "margin-top": "7%",
-              "margin-left": "10%",
-              "margin-right": "10%",
-              "margin-bottom": "10%"
+              marginTop: "7%",
+              marginLeft: "10%",
+              marginRight: "10%",
+              marginBottom: "10%"
             }}
           >
             <ThreadsModal />

@@ -9,6 +9,7 @@ import postsRouter from "./posts/post.router";
 import threadsRouter from "./threads/thread.router";
 import path from "path";
 import { connect } from "./db/db";
+import favicon from "serve-favicon";
 
 export const app = express();
 
@@ -25,6 +26,9 @@ app.use("/api/posts", postsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/threads", [protect, threadsRouter]);
 
+app.use(
+  favicon(path.join(__dirname, "../client", "dist", "favicon", "favicon.ico"))
+);
 app.use(
   "/bundle",
   express.static(path.join(__dirname, "../client/dist/bundle.js"))

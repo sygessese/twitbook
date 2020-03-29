@@ -32,10 +32,10 @@ export default class Login extends React.Component {
     return (
       <div
         style={{
-          "margin-top": "7%",
-          "margin-left": "10%",
-          "margin-right": "10%",
-          "margin-bottom": "10%"
+          marginTop: "7%",
+          marginLeft: "10%",
+          marginRight: "10%",
+          marginBottom: "10%"
         }}
       >
         <h1>Login</h1>
@@ -53,9 +53,9 @@ export default class Login extends React.Component {
             value={this.state.password}
             onChange={this.handleChange.bind(this)}
             id="password"
-            ref="password"
             placeholder="Password"
             label="Password"
+            type="password"
           />
           <Button onClick={this.login.bind(this)}>Submit</Button>
         </Form>

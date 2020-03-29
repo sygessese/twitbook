@@ -1,5 +1,6 @@
 import React from "react";
 import Auth from "../services/AuthService";
+import { Form, Input, Button, Message } from "semantic-ui-react";
 
 export default class Signup extends React.Component {
   constructor() {
@@ -8,7 +9,9 @@ export default class Signup extends React.Component {
       username: "",
       password: "",
       email: "",
-      error: ""
+      serverValidationError: "",
+      clientEmailValidationError: false,
+      clientPasswordValidationError: false
     };
   }
 
@@ -27,55 +30,103 @@ export default class Signup extends React.Component {
     this.setState({ [e.target.id]: event.target.value });
   }
 
+  validate(field) {
+    switch (field) {
+      case "username":
+        console.log("Oranges are $0.59 a pound.");
+        break;
+      case "password":
+        let passwordRegex = RegExp(
+          "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{6,})"
+        );
+        !passwordRegex.test(this.state.password)
+          ? this.setState({
+              clientPasswordValidationError: true
+            })
+          : this.setState({ clientPasswordValidationError: false });
+        break;
+      case "email":
+        let emailRegex = RegExp(
+          "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+).([a-zA-Z]{2,5})$"
+        );
+        !emailRegex.test(this.state.email)
+          ? this.setState({
+              clientEmailValidationError: true
+            })
+          : this.setState({ clientEmailValidationError: false });
+    }
+  }
+
   render() {
     return (
-      <div className="login jumbotron center-block">
-        <h1>Signup</h1>
-        <form role="form">
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              value={this.state.username}
-              onChange={this.handleChange.bind(this)}
-              className="form-control"
-              id="username"
-              placeholder="Username"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChange.bind(this)}
-              className="form-control"
-              id="password"
-              ref="password"
-              placeholder="Password"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="extra">Email</label>
-            <input
-              type="text"
-              value={this.state.email}
-              onChange={this.handleChange.bind(this)}
-              className="form-control"
-              id="email"
-              ref="email"
-              placeholder="Email"
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-default"
-            onClick={this.signup.bind(this)}
-          >
-            Submit
-          </button>
-        </form>
-        {this.state.error}
+      <div
+        style={{
+          marginTop: "7%",
+          marginLeft: "10%",
+          marginRight: "10%",
+          marginBottom: "10%"
+        }}
+      >
+        <h1>Sign-up</h1>
+        <Form>
+          <Form.Field
+            control={Input}
+            value={this.state.username}
+            onChange={this.handleChange.bind(this)}
+            className="form-control"
+            id="username"
+            placeholder="Username"
+            label="Username"
+          />
+          <Form.Field
+            control={Input}
+            value={this.state.password}
+            onChange={this.handleChange.bind(this)}
+            className="form-control"
+            id="password"
+            placeholder="Password"
+            label="Password"
+            type="password"
+            // onBlur={() => {
+            //   this.validate("password");
+            // }}
+            // error={
+            //   this.state.clientPasswordValidationError
+            //     ? {
+            //         content:
+            //           "Password must be longer than 6 characters, contain lowercase and uppercase letters, a number, and a special character",
+            //         pointing: "below"
+            //       }
+            //     : false
+            // }
+          />
+          <Form.Field
+            control={Input}
+            value={this.state.email}
+            onChange={this.handleChange.bind(this)}
+            className="form-control"
+            id="email"
+            onBlur={() => {
+              this.validate("email");
+            }}
+            error={
+              this.state.clientEmailValidationError
+                ? {
+                    content: "Please enter a valid email address",
+                    pointing: "below"
+                  }
+                : false
+            }
+            placeholder="Email"
+            label="E-mail"
+          />
+          <Button onClick={this.signup.bind(this)}>Submit</Button>
+        </Form>
+        {this.state.error ? (
+          <Message warning header="Error" content={this.state.error} />
+        ) : (
+          ""
+        )}
       </div>
     );
   }

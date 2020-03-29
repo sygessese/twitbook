@@ -12,6 +12,7 @@ var Routes = () => (
   <Router>
     <AuthenticatedApp />
     <Switch>
+      <Route path="/" exact component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/home" component={Home} />
