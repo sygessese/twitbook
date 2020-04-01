@@ -8,7 +8,21 @@ const postSchema = new mongoose.Schema(
       trim: true,
       maxlength: 200
     },
-    replies: [String],
+    replies: [
+      {
+        type: new mongoose.Schema(
+          {
+            text: String,
+            createdBy: {
+              type: mongoose.SchemaTypes.ObjectId,
+              ref: "user",
+              required: true
+            }
+          },
+          { timestamps: true }
+        )
+      }
+    ],
     createdBy: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "user",

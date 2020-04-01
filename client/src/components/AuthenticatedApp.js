@@ -1,5 +1,6 @@
 import React from "react";
 import LoginStore from "../stores/LoginStore";
+import PostsStore from "../stores/PostsStore";
 import { Link, NavLink } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { Menu, Input, Dropdown } from "semantic-ui-react";
@@ -7,26 +8,32 @@ import { Menu, Input, Dropdown } from "semantic-ui-react";
 export default class AuthenticatedApp extends React.Component {
   constructor() {
     super();
-    this.state = this._getLoginState();
+    this.state = {
+      userLoggedIn: this._getLoginState(),
+      activeThread: PostsStore.thread
+    };
+    this.changeListener = this._onChange.bind(this);
   }
 
   _getLoginState() {
-    return {
-      userLoggedIn: LoginStore.isLoggedIn()
-    };
+    return LoginStore.isLoggedIn();
   }
 
   componentDidMount() {
-    this.changeListener = this._onChange.bind(this);
     LoginStore.addChangeListener(this.changeListener);
+    PostsStore.addChangeListener(this.changeListener);
   }
 
   _onChange() {
-    this.setState(this._getLoginState());
+    this.setState({
+      userLoggedIn: this._getLoginState(),
+      activeThread: PostsStore.thread
+    });
   }
 
   componentWillUnmount() {
     LoginStore.removeChangeListener(this.changeListener);
+    PostsStore.removeChangeListener(this.changeListener);
   }
 
   render() {
@@ -56,7 +63,11 @@ export default class AuthenticatedApp extends React.Component {
         <Menu color="teal" fluid>
           <Menu.Item as={Nav} to="/home" name="Home" />
           <Menu.Item as={Nav} to="/threads" name="Threads" />
-
+          {this.state.activeThread ? (
+            <Menu.Item active name={this.state.activeThread.name} />
+          ) : (
+            ""
+          )}
           <Menu.Menu position="right">
             <Menu.Item>
               <Input

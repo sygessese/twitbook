@@ -5,13 +5,13 @@ const router = Router();
 
 // api/posts/
 router
-  .route("/")
-  .post(controller.createOne)
-  .get((req, res) => {
-    res.send({ message: `here are posts in thread: ${req.params.thread}` });
-  });
+  .route("/thread/:thread_id")
+  .post(controller.createPost)
+  .get(controller.getPosts)
+  .delete(controller.deletePost)
+  .put(controller.updatePost);
 
-// api/posts/:user/home
+// api/posts/home
 router.route("/home").get(controller.getHomePage);
 
 export default router;

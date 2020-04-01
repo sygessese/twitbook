@@ -6,6 +6,7 @@ import Login from "./components/Login.js";
 import Signup from "./components/Signup.js";
 import Home from "./components/Home.js";
 import Threads from "./components/Threads.js";
+import Posts from "./components/Posts.js";
 import LoginActions from "./actions/LoginActions";
 
 var Routes = () => (
@@ -16,7 +17,8 @@ var Routes = () => (
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/home" component={Home} />
-      <Route path="/threads" component={Threads} />
+      <Route path="/threads" exact component={Threads} />
+      <Route path="/threads/:thread_id" component={Posts} />
     </Switch>
   </Router>
 );

@@ -5,6 +5,7 @@ import LoginStore from "../stores/LoginStore.js";
 import ThreadsService from "../services/ThreadsService.js";
 import { Card, Icon, Dimmer, Loader } from "semantic-ui-react";
 import ThreadsModal from "./ThreadsModal";
+import { Link } from "react-router-dom";
 
 export default AuthenticatedComponent(
   class Threads extends React.Component {
@@ -80,7 +81,12 @@ export default AuthenticatedComponent(
 
 const threadCard = (thread, key) => (
   <Card fluid key={key}>
-    <Card.Content header={`${thread.name}`} href={`/${thread._id}`} />
+    <Card.Content
+      as={Link}
+      to={{ pathname: `/threads/${thread._id}`, state: thread }}
+      header={`${thread.name}`}
+      thread={thread}
+    />
     <Card.Content meta={`created by ${thread.createdByUsername}`} />
     <Card.Content description={`${thread.description}`} />
     <Card.Content extra>
