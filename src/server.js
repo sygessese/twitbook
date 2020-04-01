@@ -10,6 +10,7 @@ import threadsRouter from "./threads/thread.router";
 import path from "path";
 import { connect } from "./db/db";
 import favicon from "serve-favicon";
+import env from "dotenv";
 
 export const app = express();
 
@@ -38,7 +39,7 @@ app.use("/*", express.static(path.join(__dirname, "../client/dist")));
 export const start = async () => {
   try {
     await connect();
-    app.listen(config.port, () => {
+    app.listen(process.env.PORT || config.port, () => {
       console.log(`Server listening on port ${config.port}`);
     });
   } catch (e) {
