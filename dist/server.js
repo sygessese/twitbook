@@ -35,6 +35,8 @@ var _db = require("./db/db");
 
 var _serveFavicon = _interopRequireDefault(require("serve-favicon"));
 
+var _dotenv = _interopRequireDefault(require("dotenv"));
+
 var app = (0, _express["default"])();
 exports.app = app;
 app.use((0, _cors["default"])());
@@ -64,7 +66,7 @@ var start = /*#__PURE__*/function () {
             return (0, _db.connect)();
 
           case 3:
-            app.listen(_config["default"].port, function () {
+            app.listen(process.env.PORT || _config["default"].port, function () {
               console.log("Server listening on port ".concat(_config["default"].port));
             });
             _context.next = 9;

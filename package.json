@@ -10,6 +10,7 @@
     "prod-server": "webpack --mode production & node ./dist/index.js",
     "dev": "NODE_ENV=development npm run build && npm run dev-server",
     "prod": "NODE_ENV=production npm run build  && npm run prod-server",
+    "heroku": "NODE_ENV=production npm run prod-server",
     "transpile": "babel ./src --out-dir dist",
     "clean": "rimraf dist",
     "watch:dev": "nodemon"
@@ -42,7 +43,9 @@
     "serve-favicon": "^2.5.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "when": "^3.7.8",
+    "when": "^3.7.8"
+  },
+  "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
