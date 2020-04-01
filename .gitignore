@@ -1,6 +1,13 @@
+
+# for github
 node_modules
 package-lock.json
 dist
-#!dist/bundle.js
-!dist/favicon
 !client/dist
+client/dist/bundle.js
+
+# for heroku
+# node_modules
+# package-lock.json
+# src
+
