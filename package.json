@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run prod",
-    "build": "npm run clean && npm run transpile",
+    "dev-build": "npm run clean && npm run transpile",
     "dev-server": "webpack -d & node ./dist/index.js",
     "prod-server": "webpack --mode production & node ./dist/index.js",
     "dev": "NODE_ENV=development npm run build && npm run dev-server",
