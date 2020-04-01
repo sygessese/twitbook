@@ -1,4 +1,4 @@
-var BASE_URL = "http://localhost:8000/";
+var BASE_URL = "https://twitook.herokuapp.com/";
 export default {
   BASE_URL: BASE_URL,
   LOGIN_URL: BASE_URL + "login",
