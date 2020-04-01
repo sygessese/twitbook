@@ -1,5 +1,5 @@
 node_modules
 package-lock.json
 dist
-client/dist/bundle.js
+!client/dist/bundle.js
 !dist/favicon
