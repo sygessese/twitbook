@@ -5,12 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "npm run prod",
-    "dev-build": "npm run clean && npm run transpile",
+    "dev-build": "npm run clean && npm run transpile && webpack --mode production",
     "dev-server": "webpack -d & node ./dist/index.js",
     "prod-server": "webpack --mode production & node ./dist/index.js",
     "dev": "NODE_ENV=development npm run build && npm run dev-server",
     "prod": "NODE_ENV=production npm run build  && npm run prod-server",
-    "heroku": "NODE_ENV=production npm run prod-server",
+    "heroku": "NODE_ENV=production node ./dist/index.js",
     "transpile": "babel ./src --out-dir dist",
     "clean": "rimraf dist",
     "watch:dev": "nodemon"
