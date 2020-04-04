@@ -3,7 +3,7 @@ import when from "when";
 import POSTS from "../constants/PostsConstants";
 import PostsActions from "../actions/PostsActions.js";
 import LoginStore from "../stores/LoginStore.js";
-const { POSTS_URL, HOME_URL } = POSTS;
+const { POSTS_URL, HOME_URL, REPLY_URL } = POSTS;
 
 class PostsService {
   // create home store for this
@@ -38,7 +38,7 @@ class PostsService {
     // {content: string, thread_id: string}
     return when(
       request({
-        url: POSTS_URL + data.thread_id,
+        url: POSTS_URL + data.thread,
         method: "POST",
         crossOrigin: true,
         headers: {
@@ -66,21 +66,21 @@ class PostsService {
     );
   }
 
-  // updatePost(data) {
-  //   // {thread_id, thread_update: {title: string}}
-  //   when(
-  //     request({
-  //       url: THREADS_URL,
-  //       method: "PUT",
-  //       crossOrigin: true,
-  //       headers: {
-  //         Authorization: "Bearer " + LoginStore.jwt
-  //       },
-  //       type: "json",
-  //       data: data
-  //     })
-  //   );
-  // }
+  addReply(data) {
+    // {text: string}, add user_id on server
+    return when(
+      request({
+        url: REPLY_URL + data.post_id,
+        method: "PUT",
+        crossOrigin: true,
+        headers: {
+          Authorization: "Bearer " + LoginStore.jwt
+        },
+        type: "json",
+        data: data
+      })
+    );
+  }
 }
 
 export default new PostsService();

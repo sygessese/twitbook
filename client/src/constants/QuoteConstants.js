@@ -1,4 +1,4 @@
-var BASE_URL = "https://twitook.herokuapp.com/";
+var BASE_URL = "http://twitook.herokuapp.com/";
 export default {
   BASE_URL: BASE_URL,
   QUOTE_URL: BASE_URL + "api/protected/random-quote",

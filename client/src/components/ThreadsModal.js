@@ -43,7 +43,7 @@ class ThreadsModal extends Component {
     const { open, closeOnEscape, closeOnDimmerClick, dimmer } = this.state;
 
     return (
-      <div>
+      <div style={{ marginBottom: "2em" }}>
         <Input
           onFocus={this.closeConfigShow(true, false)}
           label={{ icon: "add" }}

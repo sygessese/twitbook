@@ -25,7 +25,8 @@ var connect = function connect() {
 
   _mongoose["default"].connect(process.env.MONGODB_URI || url, _objectSpread({}, options, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
   }));
 };
 

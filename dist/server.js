@@ -35,7 +35,7 @@ var _db = require("./db/db");
 
 var _serveFavicon = _interopRequireDefault(require("serve-favicon"));
 
-var _dotenv = _interopRequireDefault(require("dotenv"));
+require("dotenv");
 
 var app = (0, _express["default"])();
 exports.app = app;

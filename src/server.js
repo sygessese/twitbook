@@ -10,7 +10,7 @@ import threadsRouter from "./threads/thread.router";
 import path from "path";
 import { connect } from "./db/db";
 import favicon from "serve-favicon";
-import env from "dotenv";
+import "dotenv";
 
 export const app = express();
 

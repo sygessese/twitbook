@@ -6,6 +6,7 @@ class PostsModal extends Component {
   state = {
     open: false,
     thread_id: this.props.thread_id,
+    post_id: this.props.post_id,
     content: ""
   };
 
@@ -20,11 +21,11 @@ class PostsModal extends Component {
 
   close = () => this.setState({ open: false });
 
-  createPost = e => {
+  addReply(e) {
     e.preventDefault();
-    PostsServices.addPost({
-      thread: this.state.thread_id,
-      content: this.state.content
+    PostsServices.addReply({
+      text: this.state.text,
+      post_id: this.state.post_id
     })
       .then(success => {
         this.close();
@@ -33,7 +34,7 @@ class PostsModal extends Component {
       .catch(err => {
         console.log("error: ", err);
       });
-  };
+  }
 
   handleChange(e) {
     this.setState({ [e.target.id]: event.target.value });
@@ -44,13 +45,7 @@ class PostsModal extends Component {
 
     return (
       <div>
-        <Input
-          onFocus={this.closeConfigShow(true, false)}
-          label={{ icon: "add" }}
-          labelPosition="right corner"
-          placeholder="Add post..."
-          width={8}
-        />
+        <span onClick={this.closeConfigShow(true, false)}>reply</span>
 
         <Modal
           open={open}
@@ -60,17 +55,17 @@ class PostsModal extends Component {
           dimmer={dimmer}
           size="tiny"
         >
-          <Modal.Header>Create a new post</Modal.Header>
+          <Modal.Header>Reply to a comment</Modal.Header>
 
           <Modal.Content>
             <Form>
               <Form.Field
                 control={TextArea}
-                label="Content"
-                placeholder="Content..."
-                value={this.state.content}
+                label="Reply"
+                placeholder="Reply..."
+                value={this.state.text}
                 onChange={this.handleChange.bind(this)}
-                id="content"
+                id="text"
               />
             </Form>
           </Modal.Content>
@@ -80,11 +75,11 @@ class PostsModal extends Component {
               Cancel
             </Button>
             <Button
-              onClick={this.createPost}
+              onClick={this.addReply.bind(this)}
               positive
               labelPosition="right"
               icon="checkmark"
-              content="Create post"
+              content="Reply"
             />
           </Modal.Actions>
         </Modal>

@@ -3,9 +3,10 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import ThreadsStore from "../stores/ThreadsStore.js";
 import LoginStore from "../stores/LoginStore.js";
 import ThreadsService from "../services/ThreadsService.js";
-import { Card, Icon, Dimmer, Loader } from "semantic-ui-react";
+import { Card, Icon, Dimmer, Loader, Button, Label } from "semantic-ui-react";
 import ThreadsModal from "./ThreadsModal";
 import { Link } from "react-router-dom";
+import TimeAgo from "react-timeago";
 
 export default AuthenticatedComponent(
   class Threads extends React.Component {
@@ -62,16 +63,18 @@ export default AuthenticatedComponent(
         return (
           <div
             style={{
-              marginTop: "7%",
+              marginTop: "7em",
               marginLeft: "10%",
               marginRight: "10%",
               marginBottom: "10%"
             }}
           >
             <ThreadsModal />
-            {this.state.threads
-              .reverse()
-              .map((thread, key) => threadCard(thread, key))}
+            <Card.Group>
+              {this.state.threads
+                .reverse()
+                .map((thread, key) => threadCard(thread, key))}
+            </Card.Group>
           </div>
         );
       }
@@ -80,19 +83,35 @@ export default AuthenticatedComponent(
 );
 
 const threadCard = (thread, key) => (
-  <Card fluid key={key}>
+  <Card fluid key={key} style={threadStyle}>
     <Card.Content
       as={Link}
       to={{ pathname: `/threads/${thread._id}`, state: thread }}
-      header={`${thread.name}`}
       thread={thread}
-    />
-    <Card.Content meta={`created by ${thread.createdByUsername}`} />
-    <Card.Content description={`${thread.description}`} />
-    <Card.Content extra>
-      <Icon name="comments" /> {`${thread.comments}`}
+    >
+      <Card.Meta>created by {thread.createdByUsername}</Card.Meta>
+      <Card.Header content={`${thread.name}`} style={{ fontSize: "1.5em" }} />
+      <Card.Description>
+        <Button as="div" labelPosition="right">
+          <Button color="teal">
+            <Icon name="comments" />
+            Comments
+          </Button>
+          <Label basic color="teal" pointing="left">
+            {thread.comments}
+          </Label>
+        </Button>
+      </Card.Description>
     </Card.Content>
   </Card>
 );
+
+const threadStyle = {
+  border: "1px lightgrey solid",
+  borderRadius: "10px",
+  padding: "1em",
+  boxShadow:
+    "0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15)"
+};
 
 // on mount, gets threads from store. if state has not loaded threads, makes a request to store. on mount also adds listener to changes in threads store. if change, updates state. when unmounting, removes listener.

@@ -38,10 +38,12 @@ const getPosts = model => async (req, res) => {
   try {
     const docs = await model
       .find({ thread: req.params.thread_id })
-      .populate("createdBy username")
+      .populate("replies.createdBy", "username")
+      .populate("createdBy", "username")
       .exec();
-    // .populate("replies")
-    const thread = await threadModel.findById(req.params.thread_id);
+    const thread = await threadModel.findByIdAndUpdate(req.params.thread_id, {
+      comments: docs.length
+    });
     res.status(201).json({ posts: docs, thread: thread });
   } catch (e) {
     console.log(e);
@@ -81,12 +83,28 @@ const updatePost = model => async (req, res) => {
   }
 };
 
+// to update a post on a thread (most likely to add a reply)
+const addReply = model => async (req, res) => {
+  try {
+    const doc = await model.findOneAndUpdate(
+      { _id: req.params.post_id },
+      { $push: { replies: { text: req.body.text, createdBy: req.user._id } } }
+    );
+
+    return res.status(201).json({ data: doc });
+  } catch (e) {
+    console.log(e);
+    res.status(404).json(e);
+  }
+};
+
 const controllers = {
   getHomePage: getHomePage(model),
   createPost: createPost(model),
   getPosts: getPosts(model),
   updatePost: updatePost(model),
-  deletePost: deletePost(model)
+  deletePost: deletePost(model),
+  addReply: addReply(model)
 };
 
 export default controllers;

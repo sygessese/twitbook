@@ -14,4 +14,6 @@ router
 // api/posts/home
 router.route("/home").get(controller.getHomePage);
 
+router.route("/:post_id").put(controller.addReply);
+
 export default router;

@@ -70,13 +70,13 @@ export default AuthenticatedComponent(
             style={{
               height: "100vh",
               width: "100vw",
-              marginTop: "7%",
-              marginLeft: "10%",
-              marginRight: "10%",
+              marginTop: "5em",
+              paddingLeft: "10%",
+              paddingRight: "10%",
               marginBottom: "10%"
             }}
           >
-            <h1>Hello {this.props.user ? `, ${this.props.user}!` : ""}</h1>
+            <h1>Hello{this.props.user ? `, ${this.props.user}!` : ""}</h1>
           </div>
         );
       }

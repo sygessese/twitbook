@@ -128,12 +128,14 @@ var getPosts = function getPosts(model) {
                 _context3.next = 3;
                 return model.find({
                   thread: req.params.thread_id
-                }).populate("createdBy username").exec();
+                }).populate("replies.createdBy", "username").populate("createdBy", "username").exec();
 
               case 3:
                 docs = _context3.sent;
                 _context3.next = 6;
-                return _thread["default"].findById(req.params.thread_id);
+                return _thread["default"].findByIdAndUpdate(req.params.thread_id, {
+                  comments: docs.length
+                });
 
               case 6:
                 thread = _context3.sent;
@@ -270,6 +272,55 @@ var updatePost = function updatePost(model) {
       };
     }()
   );
+}; // to update a post on a thread (most likely to add a reply)
+
+
+var addReply = function addReply(model) {
+  return (/*#__PURE__*/function () {
+      var _ref6 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(req, res) {
+        var doc;
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.prev = 0;
+                _context6.next = 3;
+                return model.findOneAndUpdate({
+                  _id: req.params.post_id
+                }, {
+                  $push: {
+                    replies: {
+                      text: req.body.text,
+                      createdBy: req.user._id
+                    }
+                  }
+                });
+
+              case 3:
+                doc = _context6.sent;
+                return _context6.abrupt("return", res.status(201).json({
+                  data: doc
+                }));
+
+              case 7:
+                _context6.prev = 7;
+                _context6.t0 = _context6["catch"](0);
+                console.log(_context6.t0);
+                res.status(404).json(_context6.t0);
+
+              case 11:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, null, [[0, 7]]);
+      }));
+
+      return function (_x11, _x12) {
+        return _ref6.apply(this, arguments);
+      };
+    }()
+  );
 };
 
 var controllers = {
@@ -277,7 +328,8 @@ var controllers = {
   createPost: createPost(_post["default"]),
   getPosts: getPosts(_post["default"]),
   updatePost: updatePost(_post["default"]),
-  deletePost: deletePost(_post["default"])
+  deletePost: deletePost(_post["default"]),
+  addReply: addReply(_post["default"])
 };
 var _default = controllers; // {content: 'string', createdBy: user_id, thread: thread_id }
 

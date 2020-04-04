@@ -1,7 +1,7 @@
 import React from "react";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import { Menu, Input, Dropdown } from "semantic-ui-react";
 
@@ -10,7 +10,8 @@ export default class AuthenticatedApp extends React.Component {
     super();
     this.state = {
       userLoggedIn: this._getLoginState(),
-      activeThread: PostsStore.thread
+      activeThread: PostsStore.thread,
+      mobile: false
     };
     this.changeListener = this._onChange.bind(this);
   }
@@ -22,6 +23,7 @@ export default class AuthenticatedApp extends React.Component {
   componentDidMount() {
     LoginStore.addChangeListener(this.changeListener);
     PostsStore.addChangeListener(this.changeListener);
+    this.setState({ mobile: this.checkMobile() });
   }
 
   _onChange() {
@@ -29,6 +31,10 @@ export default class AuthenticatedApp extends React.Component {
       userLoggedIn: this._getLoginState(),
       activeThread: PostsStore.thread
     });
+  }
+
+  checkMobile() {
+    return window.innerWidth < 700;
   }
 
   componentWillUnmount() {
@@ -60,22 +66,27 @@ export default class AuthenticatedApp extends React.Component {
       );
     } else {
       return (
-        <Menu color="teal" fluid>
+        <Menu
+          color="teal"
+          fixed="top"
+          size={this.state.mobile ? "small" : "large"}
+        >
           <Menu.Item as={Nav} to="/home" name="Home" />
           <Menu.Item as={Nav} to="/threads" name="Threads" />
-          {this.state.activeThread ? (
+          {this.state.activeThread && !this.state.mobile ? (
             <Menu.Item active name={this.state.activeThread.name} />
           ) : (
             ""
           )}
           <Menu.Menu position="right">
-            <Menu.Item>
+            {/* <Menu.Item>
               <Input
+                style={{ width: "9em" }}
                 className="icon"
                 icon="search"
-                placeholder="Find friends..."
+                placeholder="Find friends"
               />
-            </Menu.Item>
+            </Menu.Item> */}
             <Dropdown item text={LoginStore.user} simple>
               <Dropdown.Menu>
                 <Dropdown.Item name="logout" onClick={this.logout}>
