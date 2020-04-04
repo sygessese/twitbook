@@ -38,6 +38,7 @@ const getPosts = model => async (req, res) => {
   try {
     const docs = await model
       .find({ thread: req.params.thread_id })
+      .sort("-createdAt")
       .populate("replies.createdBy", "username")
       .populate("createdBy", "username")
       .exec();

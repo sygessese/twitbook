@@ -128,7 +128,7 @@ var getPosts = function getPosts(model) {
                 _context3.next = 3;
                 return model.find({
                   thread: req.params.thread_id
-                }).populate("replies.createdBy", "username").populate("createdBy", "username").exec();
+                }).sort("-createdAt").populate("replies.createdBy", "username").populate("createdBy", "username").exec();
 
               case 3:
                 docs = _context3.sent;

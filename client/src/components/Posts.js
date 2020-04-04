@@ -127,14 +127,15 @@ export default AuthenticatedComponent(
                   {this.state.thread.name}
                 </Card.Header>
                 <Card.Meta>
-                  created by {this.state.thread.createdByUsername}{" "}
+                  created by {this.state.thread.createdByUsername}
+                  {"  "}
                   <TimeAgo date={this.state.thread.createdAt} />
                 </Card.Meta>
                 <Card.Description>
                   <br></br>
                   {this.state.thread.description
-                    ? "no decription"
-                    : this.state.thread.description}
+                    ? this.state.thread.description
+                    : "(No description provided)"}
                 </Card.Description>
               </Card.Content>
               <Card.Content extra>

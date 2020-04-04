@@ -20,9 +20,7 @@ export default AuthenticatedComponent(
 
     componentDidMount() {
       this.reroute();
-      if (!this.state.threads) {
-        this.requestThreads();
-      }
+      this.requestThreads();
 
       ThreadsStore.addChangeListener(this._onChange);
       LoginStore.addChangeListener(this._onChange);
@@ -63,17 +61,15 @@ export default AuthenticatedComponent(
         return (
           <div
             style={{
-              marginTop: "7em",
-              marginLeft: "10%",
-              marginRight: "10%",
-              marginBottom: "10%"
+              paddingTop: "7em",
+              paddingLeft: "10%",
+              paddingRight: "10%",
+              paddingBottom: "10%"
             }}
           >
             <ThreadsModal />
             <Card.Group>
-              {this.state.threads
-                .reverse()
-                .map((thread, key) => threadCard(thread, key))}
+              {this.state.threads.map((thread, key) => threadCard(thread, key))}
             </Card.Group>
           </div>
         );
