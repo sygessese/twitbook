@@ -1,10 +1,10 @@
-// var BASE_URL = "http://localhost:8000/";
-var BASE_URL = "http://twitook.herokuapp.com/";
+var BASE_URL = "http://localhost:8000/";
+// var BASE_URL = "http://twitook.herokuapp.com/";
 
 export default {
   BASE_URL: BASE_URL,
   POSTS_URL: BASE_URL + "api/posts/thread/",
-  HOME_URL: BASE_URL + "api/posts/home",
+  HOME_URL: BASE_URL + "api/users/home",
   REPLY_URL: BASE_URL + "api/posts/",
   FEED_GET: "FEED_GET",
   POSTS_GET: "POSTS_GET",

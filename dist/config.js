@@ -9,7 +9,7 @@ var _default = {
   dbUrl: "mongodb://localhost:27017/twitook",
   secrets: {
     jwt: "aphrodite",
-    jwtExp: "100d"
+    jwtExp: 3600
   }
 };
 exports["default"] = _default;

@@ -6,21 +6,6 @@ import LoginStore from "../stores/LoginStore.js";
 const { POSTS_URL, HOME_URL, REPLY_URL } = POSTS;
 
 class PostsService {
-  // create home store for this
-  getHomePage() {
-    request({
-      url: HOME_URL,
-      method: "GET",
-      crossOrigin: true,
-      headers: {
-        Authorization: "Bearer " + LoginStore.jwt
-      }
-    }).then(function(response) {
-      console.log(response.data);
-      PostsActions.getFeed(response.data);
-    });
-  }
-
   getPosts(thread_id) {
     request({
       url: POSTS_URL + thread_id,

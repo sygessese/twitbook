@@ -9,9 +9,9 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
@@ -19,63 +19,36 @@ var _post = _interopRequireDefault(require("./post.model"));
 
 var _thread = _interopRequireDefault(require("../threads/thread.model"));
 
+var _user = _interopRequireDefault(require("../users/user.model"));
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 // to get messages from all people who have this user as a follower
 // use .populate("user_id", "username")
-// move feed route to user model, push new posts and threads into all "followers"
-//userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
-//userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
-var getHomePage = function getHomePage(model) {
-  return (/*#__PURE__*/function () {
-      var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(req, res) {
-        var data;
-        return _regenerator["default"].wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return model.find().sort("-createdAt").populate("createdBy", "username");
-
-              case 3:
-                data = _context.sent;
-                res.status(200).json({
-                  data: data
-                });
-                _context.next = 11;
-                break;
-
-              case 7:
-                _context.prev = 7;
-                _context.t0 = _context["catch"](0);
-                console.log(_context.t0);
-                return _context.abrupt("return", res.status(404).end());
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 7]]);
-      }));
-
-      return function (_x, _x2) {
-        return _ref.apply(this, arguments);
-      };
-    }()
-  );
-}; // to create a post on a thread
+// // move feed route to user model, push new posts and threads into all "followers"
+// //userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
+// //userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
+// const getHomePage = model => async (req, res) => {
+//   try {
+//     const data = await model
+//       .find()
+//       .sort("-createdAt")
+//       .populate("createdBy", "username");
+//     res.status(200).json({ data });
+//   } catch (e) {
+//     console.log(e);
+//     return res.status(404).end();
+//   }
+// };
+// to create a post on a thread
 // expect body to be {content: string, thread_id: thread_id}
 // add createdBy
-
-
 var createPost = function createPost(model) {
   return (/*#__PURE__*/function () {
-      var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
-        var doc;
+      var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
+        var doc, pArray, feedUpdated;
         return _regenerator["default"].wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -88,28 +61,59 @@ var createPost = function createPost(model) {
 
               case 3:
                 doc = _context2.sent;
-                res.status(201).json({
-                  data: doc
-                });
-                _context2.next = 11;
-                break;
+                pArray = req.user.followers.map( /*#__PURE__*/function () {
+                  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(userId) {
+                    var response;
+                    return _regenerator["default"].wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            response = _user["default"].findByIdAndUpdate(userId, {
+                              $push: {
+                                feed: doc._id
+                              }
+                            });
+                            return _context.abrupt("return", response);
+
+                          case 2:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+
+                  return function (_x3) {
+                    return _ref2.apply(this, arguments);
+                  };
+                }());
+                _context2.next = 7;
+                return Promise.all(pArray);
 
               case 7:
-                _context2.prev = 7;
+                feedUpdated = _context2.sent;
+                res.status(201).json({
+                  data: [doc, pArray, feedUpdated]
+                });
+                _context2.next = 15;
+                break;
+
+              case 11:
+                _context2.prev = 11;
                 _context2.t0 = _context2["catch"](0);
                 console.error(_context2.t0);
                 res.status(400).end();
 
-              case 11:
+              case 15:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 7]]);
+        }, _callee2, null, [[0, 11]]);
       }));
 
-      return function (_x3, _x4) {
-        return _ref2.apply(this, arguments);
+      return function (_x, _x2) {
+        return _ref.apply(this, arguments);
       };
     }()
   );
@@ -160,7 +164,7 @@ var getPosts = function getPosts(model) {
         }, _callee3, null, [[0, 10]]);
       }));
 
-      return function (_x5, _x6) {
+      return function (_x4, _x5) {
         return _ref3.apply(this, arguments);
       };
     }()
@@ -222,7 +226,7 @@ var deletePost = function deletePost(model) {
         }, _callee4, null, [[0, 12]]);
       }));
 
-      return function (_x7, _x8) {
+      return function (_x6, _x7) {
         return _ref4.apply(this, arguments);
       };
     }()
@@ -267,7 +271,7 @@ var updatePost = function updatePost(model) {
         }, _callee5, null, [[0, 7]]);
       }));
 
-      return function (_x9, _x10) {
+      return function (_x8, _x9) {
         return _ref5.apply(this, arguments);
       };
     }()
@@ -277,14 +281,14 @@ var updatePost = function updatePost(model) {
 
 var addReply = function addReply(model) {
   return (/*#__PURE__*/function () {
-      var _ref6 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(req, res) {
-        var doc;
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
+      var _ref6 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee7(req, res) {
+        var doc, docId, pArray;
+        return _regenerator["default"].wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.prev = 0;
-                _context6.next = 3;
+                _context7.prev = 0;
+                _context7.next = 3;
                 return model.findOneAndUpdate({
                   _id: req.params.post_id
                 }, {
@@ -297,26 +301,57 @@ var addReply = function addReply(model) {
                 });
 
               case 3:
-                doc = _context6.sent;
-                return _context6.abrupt("return", res.status(201).json({
+                doc = _context7.sent;
+                docId = doc.replies[doc.replies.length - 1]._id;
+                pArray = req.user.followers.map( /*#__PURE__*/function () {
+                  var _ref7 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(userId) {
+                    var response;
+                    return _regenerator["default"].wrap(function _callee6$(_context6) {
+                      while (1) {
+                        switch (_context6.prev = _context6.next) {
+                          case 0:
+                            response = _user["default"].findByIdAndUpdate(userId, {
+                              $push: {
+                                feed: docId
+                              }
+                            });
+                            return _context6.abrupt("return", response);
+
+                          case 2:
+                          case "end":
+                            return _context6.stop();
+                        }
+                      }
+                    }, _callee6);
+                  }));
+
+                  return function (_x12) {
+                    return _ref7.apply(this, arguments);
+                  };
+                }());
+                _context7.next = 8;
+                return Promise.all(pArray);
+
+              case 8:
+                return _context7.abrupt("return", res.status(201).json({
                   data: doc
                 }));
 
-              case 7:
-                _context6.prev = 7;
-                _context6.t0 = _context6["catch"](0);
-                console.log(_context6.t0);
-                res.status(404).json(_context6.t0);
-
               case 11:
+                _context7.prev = 11;
+                _context7.t0 = _context7["catch"](0);
+                console.log(_context7.t0);
+                res.status(404).json(_context7.t0);
+
+              case 15:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6, null, [[0, 7]]);
+        }, _callee7, null, [[0, 11]]);
       }));
 
-      return function (_x11, _x12) {
+      return function (_x10, _x11) {
         return _ref6.apply(this, arguments);
       };
     }()
@@ -324,7 +359,6 @@ var addReply = function addReply(model) {
 };
 
 var controllers = {
-  getHomePage: getHomePage(_post["default"]),
   createPost: createPost(_post["default"]),
   getPosts: getPosts(_post["default"]),
   updatePost: updatePost(_post["default"]),

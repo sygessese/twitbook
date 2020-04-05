@@ -21,10 +21,7 @@ router.route("/search/:query").get((req, res) => {
 });
 
 // find one by id, update user followers to include this user, update this users following to include it as well
-router.route("/follow/:user").put((req, res) => {
-  res.send({
-    message: `update user ${req.params.user} to have ${req.body.id} as a follower `
-  });
-});
+router.route("/follow/:user").put(controller.followUser);
+router.route("/home").get(controller.getHomePage);
 
 export default router;

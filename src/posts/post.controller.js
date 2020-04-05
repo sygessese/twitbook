@@ -1,24 +1,25 @@
 import model from "./post.model";
 import threadModel from "../threads/thread.model";
+import userModel from "../users/user.model";
 
 // to get messages from all people who have this user as a follower
 // use .populate("user_id", "username")
 
-// move feed route to user model, push new posts and threads into all "followers"
-//userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
-//userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
-const getHomePage = model => async (req, res) => {
-  try {
-    const data = await model
-      .find()
-      .sort("-createdAt")
-      .populate("createdBy", "username");
-    res.status(200).json({ data });
-  } catch (e) {
-    console.log(e);
-    return res.status(404).end();
-  }
-};
+// // move feed route to user model, push new posts and threads into all "followers"
+// //userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
+// //userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
+// const getHomePage = model => async (req, res) => {
+//   try {
+//     const data = await model
+//       .find()
+//       .sort("-createdAt")
+//       .populate("createdBy", "username");
+//     res.status(200).json({ data });
+//   } catch (e) {
+//     console.log(e);
+//     return res.status(404).end();
+//   }
+// };
 
 // to create a post on a thread
 // expect body to be {content: string, thread_id: thread_id}
@@ -26,7 +27,14 @@ const getHomePage = model => async (req, res) => {
 const createPost = model => async (req, res) => {
   try {
     const doc = await model.create({ ...req.body, createdBy: req.user._id });
-    res.status(201).json({ data: doc });
+    const pArray = req.user.followers.map(async userId => {
+      const response = userModel.findByIdAndUpdate(userId, {
+        $push: { feed: doc._id }
+      });
+      return response;
+    });
+    const feedUpdated = await Promise.all(pArray);
+    res.status(201).json({ data: [doc, pArray, feedUpdated] });
   } catch (e) {
     console.error(e);
     res.status(400).end();
@@ -91,6 +99,14 @@ const addReply = model => async (req, res) => {
       { _id: req.params.post_id },
       { $push: { replies: { text: req.body.text, createdBy: req.user._id } } }
     );
+    const docId = doc.replies[doc.replies.length - 1]._id;
+    const pArray = req.user.followers.map(async userId => {
+      const response = userModel.findByIdAndUpdate(userId, {
+        $push: { feed: docId }
+      });
+      return response;
+    });
+    await Promise.all(pArray);
 
     return res.status(201).json({ data: doc });
   } catch (e) {
@@ -100,7 +116,6 @@ const addReply = model => async (req, res) => {
 };
 
 const controllers = {
-  getHomePage: getHomePage(model),
   createPost: createPost(model),
   getPosts: getPosts(model),
   updatePost: updatePost(model),

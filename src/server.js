@@ -24,7 +24,7 @@ app.post("/signup", signup);
 
 // app.use('/api', protect);
 app.use("/api/posts", [protect, postsRouter]);
-app.use("/api/users", usersRouter);
+app.use("/api/users", [protect, usersRouter]);
 app.use("/api/threads", [protect, threadsRouter]);
 
 app.use(

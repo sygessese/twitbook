@@ -29,10 +29,7 @@ router.route("/search/:query").get(function (req, res) {
   });
 }); // find one by id, update user followers to include this user, update this users following to include it as well
 
-router.route("/follow/:user").put(function (req, res) {
-  res.send({
-    message: "update user ".concat(req.params.user, " to have ").concat(req.body.id, " as a follower ")
-  });
-});
+router.route("/follow/:user").put(_user["default"].followUser);
+router.route("/home").get(_user["default"].getHomePage);
 var _default = router;
 exports["default"] = _default;

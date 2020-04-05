@@ -2,7 +2,7 @@ import React from "react";
 import AuthenticatedComponent from "./AuthenticatedComponent";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
-import PostsServices from "../services/PostsServices";
+import UsersServices from "../services/UsersServices";
 import styled from "styled-components";
 
 export default AuthenticatedComponent(
@@ -43,7 +43,7 @@ export default AuthenticatedComponent(
     }
 
     requestFeed() {
-      PostsServices.getHomePage();
+      UsersServices.getHomePage();
     }
 
     getFeedState() {

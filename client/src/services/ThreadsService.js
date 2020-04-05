@@ -38,7 +38,7 @@ class ThreadsService {
 
   deleteThread(data) {
     // {thread_id: int}
-    when(
+    return when(
       request({
         url: THREADS_URL,
         method: "DELETE",

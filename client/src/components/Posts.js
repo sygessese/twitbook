@@ -13,11 +13,14 @@ import {
   Loader,
   Card,
   Button,
-  Progress
+  Progress,
+  Grid,
+  Popup
 } from "semantic-ui-react";
 import PostsModal from "./PostsModal";
 import PostsActions from "../actions/PostsActions";
 import TimeAgo from "react-timeago";
+import FollowPopup from "./FollowPopup";
 
 export default AuthenticatedComponent(
   class Posts extends React.Component {
@@ -189,7 +192,25 @@ const postCard = (post, key) => (
   <Comment key={key}>
     <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg" />
     <Comment.Content>
-      <Comment.Author as="a"> {`${post.createdBy.username}`}</Comment.Author>
+      <Comment.Author as="a">
+        {/* {`${post.createdBy.username}`} */}
+        {/* 
+        <Popup
+          trigger={<span>{post.createdBy.username}</span>}
+          hoverable
+          style={{ display: "flex" }}
+        >
+          <p>
+            Click follow to see {post.createdBy.username}'s activity in your
+            home feed
+          </p>
+          <Button>Follow</Button>
+        </Popup> */}
+        <FollowPopup
+          username={post.createdBy.username}
+          id={post.createdBy._id}
+        />
+      </Comment.Author>
       <Comment.Metadata>
         <div>
           <TimeAgo date={post.createdAt} />

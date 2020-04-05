@@ -49,7 +49,7 @@ app.post("/login", _auth.login);
 app.post("/signup", _auth.signup); // app.use('/api', protect);
 
 app.use("/api/posts", [_auth.protect, _post["default"]]);
-app.use("/api/users", _user["default"]);
+app.use("/api/users", [_auth.protect, _user["default"]]);
 app.use("/api/threads", [_auth.protect, _thread["default"]]);
 app.use((0, _serveFavicon["default"])(_path["default"].join(__dirname, "../client", "dist", "favicon", "favicon.ico")));
 app.use("/bundle", _express["default"]["static"](_path["default"].join(__dirname, "../client/dist/bundle.js")));

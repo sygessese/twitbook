@@ -3,7 +3,16 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import ThreadsStore from "../stores/ThreadsStore.js";
 import LoginStore from "../stores/LoginStore.js";
 import ThreadsService from "../services/ThreadsService.js";
-import { Card, Icon, Dimmer, Loader, Button, Label } from "semantic-ui-react";
+import {
+  Card,
+  Icon,
+  Dimmer,
+  Loader,
+  Button,
+  Label,
+  Divider,
+  Confirm
+} from "semantic-ui-react";
 import ThreadsModal from "./ThreadsModal";
 import { Link } from "react-router-dom";
 import TimeAgo from "react-timeago";
@@ -13,9 +22,12 @@ export default AuthenticatedComponent(
     constructor(props) {
       super(props);
       this.state = {
-        threads: this.getThreadsState()
+        threads: this.getThreadsState(),
+        open: false,
+        modalMessage: "Are you sure you would like to delete this thread?"
       };
       this._onChange = this._onChange.bind(this);
+      this.deleteThread = this.deleteThread.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +62,117 @@ export default AuthenticatedComponent(
       return ThreadsStore.threads;
     }
 
+    open() {
+      this.setState({ open: true });
+    }
+
+    close() {
+      this.setState({ open: false });
+    }
+
+    deleteThread(thread_id) {
+      ThreadsService.deleteThread({ thread_id })
+        .then(() => {
+          this.setState({ modalMessage: "Success!" }, () => {
+            setTimeout(() => {
+              this.close();
+              ThreadsService.getThreads();
+              this.setState({
+                modalMessage:
+                  "Are you sure you would like to delete this thread?"
+              });
+            }, 700);
+          });
+        })
+        .catch(() => {
+          this.setState({ modalMessage: "Error!" }, () => {
+            setTimeout(() => {
+              this.close();
+              this.setState({
+                modalMessage:
+                  "Are you sure you would like to delete this thread?"
+              });
+            }, 700);
+          });
+        });
+    }
+
+    confirmModal(thread_id) {
+      return (
+        <Confirm
+          open={this.state.open}
+          onCancel={this.close.bind(this)}
+          content={this.state.modalMessage}
+          onConfirm={() => {
+            this.deleteThread(thread_id);
+          }}
+        />
+      );
+    }
+
     render() {
+      const threadCard = (thread, key) => (
+        <Card fluid key={key} style={threadStyle}>
+          <Card.Content>
+            <Card.Meta
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <span>
+                created by <b>{thread.createdBy.username}</b>{" "}
+                <TimeAgo date={thread.createdAt} />
+              </span>
+              {/* {LoginStore._user === thread.createdBy.username ? (
+                <span>
+                  <Icon
+                    name="trash"
+                    color="red"
+                    onClick={this.open.bind(this)}
+                  />
+                  {this.confirmModal(thread._id)}
+                </span>
+              ) : (
+                ""
+              )} */}
+              <span>
+                <Icon name="trash" color="red" onClick={this.open.bind(this)} />
+                {this.confirmModal(thread._id)}
+              </span>
+            </Card.Meta>
+
+            <Divider clearing />
+
+            <Card.Header
+              content={`${thread.name}`}
+              style={{ fontSize: "1.5em" }}
+              as={Link}
+              to={{ pathname: `/threads/${thread._id}`, state: thread }}
+              thread={thread}
+            />
+            <Card.Meta>{thread.description}</Card.Meta>
+            <Divider clearing />
+
+            <Card.Description
+              style={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <Button
+                labelPosition="right"
+                as={Link}
+                to={{ pathname: `/threads/${thread._id}`, state: thread }}
+                thread={thread}
+              >
+                <Button color="teal">
+                  <Icon name="comments" />
+                  Comments
+                </Button>
+                <Label basic color="blue" pointing="left">
+                  {thread.comments}
+                </Label>
+              </Button>
+            </Card.Description>
+          </Card.Content>
+        </Card>
+      );
+
       if (!this.state.threads) {
         return (
           <Dimmer active inverted>
@@ -76,30 +198,6 @@ export default AuthenticatedComponent(
       }
     }
   }
-);
-
-const threadCard = (thread, key) => (
-  <Card fluid key={key} style={threadStyle}>
-    <Card.Content
-      as={Link}
-      to={{ pathname: `/threads/${thread._id}`, state: thread }}
-      thread={thread}
-    >
-      <Card.Meta>created by {thread.createdByUsername}</Card.Meta>
-      <Card.Header content={`${thread.name}`} style={{ fontSize: "1.5em" }} />
-      <Card.Description>
-        <Button as="div" labelPosition="right">
-          <Button color="teal">
-            <Icon name="comments" />
-            Comments
-          </Button>
-          <Label basic color="teal" pointing="left">
-            {thread.comments}
-          </Label>
-        </Button>
-      </Card.Description>
-    </Card.Content>
-  </Card>
 );
 
 const threadStyle = {
