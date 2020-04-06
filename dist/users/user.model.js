@@ -35,11 +35,16 @@ var userSchema = new _mongoose["default"].Schema({
     ref: "user"
   }],
   feed: [{
-    type: _mongoose["default"].SchemaTypes.ObjectId,
-    ref: "thread"
-  }, {
-    type: _mongoose["default"].SchemaTypes.ObjectId,
-    ref: "post"
+    itemId: {
+      type: _mongoose["default"].Schema.Types.ObjectId,
+      required: true,
+      refPath: "feed.itemModel"
+    },
+    itemModel: {
+      type: String,
+      required: true,
+      "enum": ["thread", "post"]
+    }
   }]
 }, {
   timestamps: true

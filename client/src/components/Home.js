@@ -3,7 +3,9 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
 import UsersServices from "../services/UsersServices";
+import { Feed } from "semantic-ui-react";
 import styled from "styled-components";
+import TimeAgo from "react-timeago";
 
 export default AuthenticatedComponent(
   class Home extends React.Component {
@@ -55,10 +57,10 @@ export default AuthenticatedComponent(
         return (
           <div
             style={{
-              marginTop: "7%",
-              marginLeft: "10%",
-              marginRight: "10%",
-              marginBottom: "10%"
+              paddingTop: "7%",
+              paddingLeft: "10%",
+              paddingRight: "10%",
+              paddingBottom: "10%"
             }}
           >
             <FrontPageLogo> Twitook </FrontPageLogo>
@@ -70,13 +72,20 @@ export default AuthenticatedComponent(
             style={{
               height: "100vh",
               width: "100vw",
-              marginTop: "5em",
+              paddingTop: "7em",
               paddingLeft: "10%",
               paddingRight: "10%",
-              marginBottom: "10%"
+              paddingBottom: "10%"
             }}
           >
             <h1>Hello{this.props.user ? `, ${this.props.user}!` : ""}</h1>
+            <Feed>
+              {this.state.feed
+                ? this.state.feed.map((item, index) => {
+                    return feedItem(item.itemId, index, item.itemModel);
+                  })
+                : ""}
+            </Feed>
           </div>
         );
       }
@@ -90,5 +99,34 @@ const FrontPageLogo = styled.h1`
   text-align: center;
   margin-right: 5%;
 `;
+
+const feedItem = (item, index, model) => {
+  return (
+    <Feed.Event key={index} style={feedStyle}>
+      <Feed.Label>
+        <img src="https://react.semantic-ui.com/images/avatar/small/elliot.jpg" />
+      </Feed.Label>
+      <Feed.Content>
+        <Feed.Summary>
+          <Feed.User>{item.createdBy.username}</Feed.User>{" "}
+          {model === "thread" ? "created a new thread" : "left a comment"}
+          <Feed.Date>
+            <TimeAgo date={item.createdAt} />
+          </Feed.Date>
+        </Feed.Summary>
+        <Feed.Extra>{model === "thread" ? item.name : item.content}</Feed.Extra>
+      </Feed.Content>
+    </Feed.Event>
+  );
+};
+
+const feedStyle = {
+  border: "1px lightgrey solid",
+  borderRadius: "10px",
+  padding: "1em",
+  marginTop: "2em",
+  boxShadow:
+    "0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15)"
+};
 
 // home logic eventually: push post/thread id's into user's feed

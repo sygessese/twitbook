@@ -19,7 +19,7 @@ const FollowPopup = props => {
       hoverable
       style={{ display: "flex" }}
     >
-      <p>Click follow to see {props.id}'s activity in your home feed</p>
+      <p>Click follow to see {props.username}'s activity in your home feed</p>
       <Button onClick={startFollowing}>Follow</Button>
     </Popup>
   );

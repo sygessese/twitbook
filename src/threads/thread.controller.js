@@ -7,7 +7,7 @@ const createThread = model => async (req, res) => {
     const doc = await model.create({ ...req.body, createdBy: req.user._id });
     const pArray = req.user.followers.map(async userId => {
       const response = userModel.findByIdAndUpdate(userId, {
-        $push: { feed: doc._id }
+        $push: { feed: { itemId: doc._id, itemModel: "thread" } }
       });
       return response;
     });

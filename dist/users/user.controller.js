@@ -69,7 +69,22 @@ var followUser = function followUser(model) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.prev = 0;
-                _context2.next = 3;
+
+                if (!(req.user.following.toString().indexOf(req.params.user) > -1)) {
+                  _context2.next = 5;
+                  break;
+                }
+
+                res.status(201).json({
+                  data: {
+                    mesage: "you are already following this user"
+                  }
+                });
+                _context2.next = 12;
+                break;
+
+              case 5:
+                _context2.next = 7;
                 return model.findOneAndUpdate({
                   _id: req.params.user
                 }, {
@@ -78,9 +93,9 @@ var followUser = function followUser(model) {
                   }
                 });
 
-              case 3:
+              case 7:
                 userToBeFollowed = _context2.sent;
-                _context2.next = 6;
+                _context2.next = 10;
                 return model.findOneAndUpdate({
                   _id: req.user._id
                 }, {
@@ -89,24 +104,28 @@ var followUser = function followUser(model) {
                   }
                 });
 
-              case 6:
+              case 10:
                 thisUser = _context2.sent;
                 return _context2.abrupt("return", res.status(201).json({
                   data: [userToBeFollowed, thisUser]
                 }));
 
-              case 10:
-                _context2.prev = 10;
+              case 12:
+                _context2.next = 18;
+                break;
+
+              case 14:
+                _context2.prev = 14;
                 _context2.t0 = _context2["catch"](0);
                 console.log(_context2.t0);
                 res.status(404).json(_context2.t0);
 
-              case 14:
+              case 18:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 10]]);
+        }, _callee2, null, [[0, 14]]);
       }));
 
       return function (_x3, _x4) {
@@ -114,9 +133,10 @@ var followUser = function followUser(model) {
       };
     }()
   );
-}; // move feed route to user model, push new posts and threads into all "followers"
-//userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
+}; //userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ),
+//returns ten after skipping first 20
 //userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
+// returns ten before last 20
 
 
 var getHomePage = function getHomePage(model) {
@@ -129,28 +149,41 @@ var getHomePage = function getHomePage(model) {
               case 0:
                 _context3.prev = 0;
                 _context3.next = 3;
-                return model.findById(req.user._id).populate("feed");
+                return model.findById(req.user._id).populate({
+                  path: "feed.itemId",
+                  populate: {
+                    path: "createdBy ",
+                    select: "username"
+                  }
+                });
 
               case 3:
                 doc = _context3.sent;
                 res.status(200).json({
                   data: doc.feed
                 });
-                _context3.next = 11;
+                doc.feed = doc.feed.filter(function (item) {
+                  return item.itemId;
+                });
+                _context3.next = 8;
+                return doc.save();
+
+              case 8:
+                _context3.next = 14;
                 break;
 
-              case 7:
-                _context3.prev = 7;
+              case 10:
+                _context3.prev = 10;
                 _context3.t0 = _context3["catch"](0);
                 console.log(_context3.t0);
                 return _context3.abrupt("return", res.status(404).end());
 
-              case 11:
+              case 14:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, null, [[0, 7]]);
+        }, _callee3, null, [[0, 10]]);
       }));
 
       return function (_x5, _x6) {

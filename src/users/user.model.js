@@ -20,8 +20,18 @@ const userSchema = new mongoose.Schema(
     followers: [{ type: mongoose.SchemaTypes.ObjectId, ref: "user" }],
     following: [{ type: mongoose.SchemaTypes.ObjectId, ref: "user" }],
     feed: [
-      { type: mongoose.SchemaTypes.ObjectId, ref: "thread" },
-      { type: mongoose.SchemaTypes.ObjectId, ref: "post" }
+      {
+        itemId: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          refPath: "feed.itemModel"
+        },
+        itemModel: {
+          type: String,
+          required: true,
+          enum: ["thread", "post"]
+        }
+      }
     ]
   },
   { timestamps: true }

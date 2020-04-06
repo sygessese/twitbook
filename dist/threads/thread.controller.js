@@ -48,7 +48,10 @@ var createThread = function createThread(model) {
                           case 0:
                             response = _user["default"].findByIdAndUpdate(userId, {
                               $push: {
-                                feed: doc._id
+                                feed: {
+                                  itemId: doc._id,
+                                  itemModel: "thread"
+                                }
                               }
                             });
                             return _context.abrupt("return", response);

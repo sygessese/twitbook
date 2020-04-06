@@ -16,6 +16,7 @@ import {
 import ThreadsModal from "./ThreadsModal";
 import { Link } from "react-router-dom";
 import TimeAgo from "react-timeago";
+import Popup from "./FollowPopup";
 
 export default AuthenticatedComponent(
   class Threads extends React.Component {
@@ -118,7 +119,13 @@ export default AuthenticatedComponent(
               style={{ display: "flex", justifyContent: "space-between" }}
             >
               <span>
-                created by <b>{thread.createdBy.username}</b>{" "}
+                created by{" "}
+                <b>
+                  <Popup
+                    id={thread.createdBy._id}
+                    username={thread.createdBy.username}
+                  />
+                </b>{" "}
                 <TimeAgo date={thread.createdAt} />
               </span>
               {/* {LoginStore._user === thread.createdBy.username ? (

@@ -25,26 +25,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-// to get messages from all people who have this user as a follower
-// use .populate("user_id", "username")
-// // move feed route to user model, push new posts and threads into all "followers"
-// //userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
-// //userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
-// const getHomePage = model => async (req, res) => {
-//   try {
-//     const data = await model
-//       .find()
-//       .sort("-createdAt")
-//       .populate("createdBy", "username");
-//     res.status(200).json({ data });
-//   } catch (e) {
-//     console.log(e);
-//     return res.status(404).end();
-//   }
-// };
 // to create a post on a thread
-// expect body to be {content: string, thread_id: thread_id}
-// add createdBy
 var createPost = function createPost(model) {
   return (/*#__PURE__*/function () {
       var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(req, res) {
@@ -70,7 +51,10 @@ var createPost = function createPost(model) {
                           case 0:
                             response = _user["default"].findByIdAndUpdate(userId, {
                               $push: {
-                                feed: doc._id
+                                feed: {
+                                  itemId: doc._id,
+                                  itemModel: "post"
+                                }
                               }
                             });
                             return _context.abrupt("return", response);

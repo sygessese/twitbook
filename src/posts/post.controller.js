@@ -2,34 +2,13 @@ import model from "./post.model";
 import threadModel from "../threads/thread.model";
 import userModel from "../users/user.model";
 
-// to get messages from all people who have this user as a follower
-// use .populate("user_id", "username")
-
-// // move feed route to user model, push new posts and threads into all "followers"
-// //userModel.find( {id: _id}, { feed: { $slice: [ 20, 10 ] } } ), returns ten after skipping first 20
-// //userModel.find( {id: _id}, { feed: { $slice: [ -20, 10 ] } } )
-// const getHomePage = model => async (req, res) => {
-//   try {
-//     const data = await model
-//       .find()
-//       .sort("-createdAt")
-//       .populate("createdBy", "username");
-//     res.status(200).json({ data });
-//   } catch (e) {
-//     console.log(e);
-//     return res.status(404).end();
-//   }
-// };
-
 // to create a post on a thread
-// expect body to be {content: string, thread_id: thread_id}
-// add createdBy
 const createPost = model => async (req, res) => {
   try {
     const doc = await model.create({ ...req.body, createdBy: req.user._id });
     const pArray = req.user.followers.map(async userId => {
       const response = userModel.findByIdAndUpdate(userId, {
-        $push: { feed: doc._id }
+        $push: { feed: { itemId: doc._id, itemModel: "post" } }
       });
       return response;
     });
@@ -84,7 +63,7 @@ const updatePost = model => async (req, res) => {
       { _id: req.body.post_id, createdBy: req.user._id },
       { replies: [...doc.replies, req.body.reply] }
     );
-
+    // push comment to feed too
     return res.status(201).json({ data: updatedDoc });
   } catch (e) {
     console.log(e);

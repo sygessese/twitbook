@@ -193,19 +193,6 @@ const postCard = (post, key) => (
     <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg" />
     <Comment.Content>
       <Comment.Author as="a">
-        {/* {`${post.createdBy.username}`} */}
-        {/* 
-        <Popup
-          trigger={<span>{post.createdBy.username}</span>}
-          hoverable
-          style={{ display: "flex" }}
-        >
-          <p>
-            Click follow to see {post.createdBy.username}'s activity in your
-            home feed
-          </p>
-          <Button>Follow</Button>
-        </Popup> */}
         <FollowPopup
           username={post.createdBy.username}
           id={post.createdBy._id}
@@ -242,9 +229,6 @@ const replyCard = (reply, index) => (
         </div>
       </Comment.Metadata>
       <Comment.Text>{reply.text}</Comment.Text>
-      <Comment.Actions>
-        <Comment.Action>Reply</Comment.Action>
-      </Comment.Actions>
     </Comment.Content>
   </Comment>
 );
