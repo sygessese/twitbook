@@ -78,14 +78,20 @@ const addReply = model => async (req, res) => {
       { _id: req.params.post_id },
       { $push: { replies: { text: req.body.text, createdBy: req.user._id } } }
     );
-    const docId = doc.replies[doc.replies.length - 1]._id;
-    const pArray = req.user.followers.map(async userId => {
-      const response = userModel.findByIdAndUpdate(userId, {
-        $push: { feed: docId }
-      });
-      return response;
-    });
-    await Promise.all(pArray);
+    // bug here: pushed object is not accessible immediately, and is undefined below
+    // therefore naiive solution: retrieving the document again, assumming elapsed time is sufficient
+
+    // const updatedDoc = await model.findById(req.params.post_id);
+    // const docId = updatedDoc.replies[updatedDoc.replies.length - 1]._id;
+    // const pArray = req.user.followers.map(async userId => {
+    //   const response = userModel.findByIdAndUpdate(userId, {
+    //     $push: { feed: docId, itemModel: "reply" }
+    //   });
+    //   return response;
+    // });
+    // await Promise.all(pArray);
+
+    // commented out for now as there is no schema for replies, ie doesnt show up in feed
 
     return res.status(201).json({ data: doc });
   } catch (e) {

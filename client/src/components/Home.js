@@ -3,25 +3,22 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
 import UsersServices from "../services/UsersServices";
-import { Feed } from "semantic-ui-react";
+import { Feed, Button } from "semantic-ui-react";
 import styled from "styled-components";
 import TimeAgo from "react-timeago";
+import Identicon from "react-identicons";
 
 export default AuthenticatedComponent(
   class Home extends React.Component {
     constructor(props) {
       super(props);
-      this.state = {
-        feed: this.getFeedState()
-      };
+      this.state = this.getFeedState();
       this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
       this.reroute();
-      if (!this.state.feed) {
-        this.requestFeed();
-      }
+      this.requestFeed();
       PostsStore.addChangeListener(this._onChange);
       LoginStore.addChangeListener(this._onChange);
     }
@@ -33,7 +30,7 @@ export default AuthenticatedComponent(
 
     // check if buggy when reversed
     _onChange() {
-      this.setState({ feed: this.getFeedState() });
+      this.setState(this.getFeedState());
       this.reroute();
     }
 
@@ -48,11 +45,18 @@ export default AuthenticatedComponent(
       UsersServices.getHomePage();
     }
 
+    moreFeed() {
+      var offset = this.state.feed.length;
+      var lastId = this.state.feed[offset - 1]._id;
+      UsersServices.moreHomePage(offset, lastId);
+    }
+
     getFeedState() {
-      return PostsStore.feed;
+      return { feed: PostsStore.feed, endOfFeed: PostsStore.endOfFeed };
     }
 
     render() {
+      console.log(this.state.feed);
       if (!LoginStore.isLoggedIn()) {
         return (
           <div
@@ -86,6 +90,24 @@ export default AuthenticatedComponent(
                   })
                 : ""}
             </Feed>
+            <div
+              style={{
+                marginBottom: "5em",
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              {this.state.endOfFeed ? (
+                "You've reached the end of your feed!"
+              ) : (
+                <Button
+                  style={{ width: "100%", marginTop: "1em" }}
+                  onClick={this.moreFeed.bind(this)}
+                >
+                  More ...{" "}
+                </Button>
+              )}
+            </div>
           </div>
         );
       }
@@ -101,10 +123,13 @@ const FrontPageLogo = styled.h1`
 `;
 
 const feedItem = (item, index, model) => {
+  if (!model) {
+    return "";
+  }
   return (
     <Feed.Event key={index} style={feedStyle}>
-      <Feed.Label>
-        <img src="https://react.semantic-ui.com/images/avatar/small/elliot.jpg" />
+      <Feed.Label style={{ marginTop: 9, marginLeft: 8 }}>
+        <Identicon size={30} string={item.createdBy._id} />
       </Feed.Label>
       <Feed.Content>
         <Feed.Summary>

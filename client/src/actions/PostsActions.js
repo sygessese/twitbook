@@ -1,6 +1,6 @@
 import AppDispatcher from "../dispatchers/AppDispatcher.js";
 import POSTS from "../constants/PostsConstants.js";
-const { POSTS_GET, FEED_GET, POSTS_CLEAR } = POSTS;
+const { POSTS_GET, FEED_GET, POSTS_CLEAR, FEED_GET_MORE } = POSTS;
 
 export default {
   getPosts: data => {
@@ -16,6 +16,15 @@ export default {
       feed: feed
     });
   },
+
+  getMoreFeed: feed => {
+    AppDispatcher.dispatch({
+      actionType: FEED_GET_MORE,
+      feed: feed.data,
+      endOfFeed: feed.endOfFeed
+    });
+  },
+
   clearPosts: () => {
     AppDispatcher.dispatch({
       actionType: POSTS_CLEAR

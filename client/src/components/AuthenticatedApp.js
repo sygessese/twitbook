@@ -89,6 +89,9 @@ export default class AuthenticatedApp extends React.Component {
             </Menu.Item> */}
             <Dropdown item text={LoginStore.user} simple>
               <Dropdown.Menu>
+                <Dropdown.Item as={Nav} to="/settings" name="settings">
+                  Settings
+                </Dropdown.Item>
                 <Dropdown.Item name="logout" onClick={this.logout}>
                   Logout
                 </Dropdown.Item>

@@ -4,5 +4,7 @@ var BASE_URL = "http://localhost:8000/";
 export default {
   BASE_URL: BASE_URL,
   FOLLOW_URL: BASE_URL + "api/users/follow/",
-  FOLLOW_USER: "FOLLOW_USER"
+  UPDATE_URL: BASE_URL + "api/users/",
+  FOLLOW_USER: "FOLLOW_USER",
+  UPDATE_USER: "UPDATE_USER"
 };

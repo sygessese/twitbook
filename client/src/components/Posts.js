@@ -3,6 +3,7 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import PostsStore from "../stores/PostsStore.js";
 import LoginStore from "../stores/LoginStore.js";
 import PostsServices from "../services/PostsServices.js";
+import ThreadsService from "../services/ThreadsService.js";
 import {
   Comment,
   Segment,
@@ -15,12 +16,14 @@ import {
   Button,
   Progress,
   Grid,
-  Popup
+  Popup,
+  Confirm
 } from "semantic-ui-react";
 import PostsModal from "./PostsModal";
 import PostsActions from "../actions/PostsActions";
 import TimeAgo from "react-timeago";
 import FollowPopup from "./FollowPopup";
+import Identicon from "react-identicons";
 
 export default AuthenticatedComponent(
   class Posts extends React.Component {
@@ -31,9 +34,12 @@ export default AuthenticatedComponent(
         thread: "",
         content: "",
         progressBar: false,
-        progress: 0
+        progress: 0,
+        open: false,
+        modalMessage: "Are you sure you would like to delete this thread?"
       };
       this._onChange = this._onChange.bind(this);
+      this.deleteThread = this.deleteThread.bind(this);
     }
 
     componentDidMount() {
@@ -57,9 +63,12 @@ export default AuthenticatedComponent(
       this.reroute();
     }
 
-    reroute() {
+    reroute(path) {
       if (!LoginStore.isLoggedIn()) {
         this.props.history.push("/");
+      }
+      if (path) {
+        this.props.history.push(path);
       }
     }
 
@@ -73,6 +82,50 @@ export default AuthenticatedComponent(
 
     handleChange(e) {
       this.setState({ content: event.target.value });
+    }
+
+    open() {
+      this.setState({ open: true });
+    }
+
+    close() {
+      this.setState({ open: false });
+    }
+
+    deleteThread(thread_id) {
+      ThreadsService.deleteThread({ thread_id })
+        .then(() => {
+          this.setState({ modalMessage: "Success!" }, () => {
+            setTimeout(() => {
+              this.close();
+              this.reroute("/threads");
+            }, 700);
+          });
+        })
+        .catch(() => {
+          this.setState({ modalMessage: "Error!" }, () => {
+            setTimeout(() => {
+              this.close();
+              this.setState({
+                modalMessage:
+                  "Are you sure you would like to delete this thread?"
+              });
+            }, 700);
+          });
+        });
+    }
+
+    confirmModal(thread_id) {
+      return (
+        <Confirm
+          open={this.state.open}
+          onCancel={this.close.bind(this)}
+          content={this.state.modalMessage}
+          onConfirm={() => {
+            this.deleteThread(thread_id);
+          }}
+        />
+      );
     }
 
     createPost(e) {
@@ -126,8 +179,36 @@ export default AuthenticatedComponent(
               }}
             >
               <Card.Content>
-                <Card.Header style={{ fontSize: "2em", marginBottom: "0" }}>
+                <Card.Header
+                  style={{
+                    fontSize: "2em",
+                    marginBottom: "0",
+                    display: "flex",
+                    justifyContent: "space-between"
+                  }}
+                >
                   {this.state.thread.name}
+
+                  {/* {LoginStore._user === thread.createdBy.username ? (
+                <span>
+                  <Icon
+                    name="trash"
+                    color="red"
+                    onClick={this.open.bind(this)}
+                  />
+                  {this.confirmModal(thread._id)}
+                </span>
+              ) : (
+                ""
+              )} */}
+                  <div style={{ fontSize: ".8em" }}>
+                    <Icon
+                      name="trash alternate outline"
+                      color="red"
+                      onClick={this.open.bind(this)}
+                    />
+                    {this.confirmModal(this.state.thread._id)}
+                  </div>
                 </Card.Header>
                 <Card.Meta>
                   created by {this.state.thread.createdByUsername}
@@ -190,26 +271,30 @@ export default AuthenticatedComponent(
 
 const postCard = (post, key) => (
   <Comment key={key}>
-    <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/jenny.jpg" />
-    <Comment.Content>
-      <Comment.Author as="a">
-        <FollowPopup
-          username={post.createdBy.username}
-          id={post.createdBy._id}
-        />
-      </Comment.Author>
-      <Comment.Metadata>
-        <div>
-          <TimeAgo date={post.createdAt} />
-        </div>
-      </Comment.Metadata>
-      <Comment.Text> {`${post.content}`}</Comment.Text>
-      <Comment.Actions>
-        <Comment.Action>
-          <PostsModal thread_id={post.thread} post_id={post._id} />
-        </Comment.Action>
-      </Comment.Actions>
-    </Comment.Content>
+    <div style={{ display: "flex" }}>
+      <div style={{ height: "40px", width: "40px", display: "inline-block" }}>
+        <Identicon size={30} string={post.createdBy._id} />
+      </div>
+      <Comment.Content style={{ display: "inline-block" }}>
+        <Comment.Author as="a">
+          <FollowPopup
+            username={post.createdBy.username}
+            id={post.createdBy._id}
+          />
+        </Comment.Author>
+        <Comment.Metadata>
+          <div>
+            <TimeAgo date={post.createdAt} />
+          </div>
+        </Comment.Metadata>
+        <Comment.Text> {`${post.content}`}</Comment.Text>
+        <Comment.Actions>
+          <Comment.Action>
+            <PostsModal thread_id={post.thread} post_id={post._id} />
+          </Comment.Action>
+        </Comment.Actions>
+      </Comment.Content>
+    </div>
     <Comment.Group>
       {post.replies.map((reply, index) => {
         return replyCard(reply, index);
@@ -219,8 +304,10 @@ const postCard = (post, key) => (
 );
 
 const replyCard = (reply, index) => (
-  <Comment key={index}>
-    <Comment.Avatar src="https://react.semantic-ui.com/images/avatar/small/joe.jpg" />
+  <Comment key={index} style={{ display: "flex" }}>
+    <div style={{ height: "40px", width: "40px", display: "inline-block" }}>
+      <Identicon size={30} string={reply.createdBy._id} />
+    </div>
     <Comment.Content>
       <Comment.Author as="a">{reply.createdBy.username}</Comment.Author>
       <Comment.Metadata>

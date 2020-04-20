@@ -3,7 +3,7 @@ import LOGIN from "../constants/LoginConstants";
 import BaseStore from "./BaseStore";
 
 const { LOGOUT_USER } = LOGIN;
-const { POSTS_GET, FEED_GET, POSTS_CLEAR } = POSTS;
+const { POSTS_GET, FEED_GET, POSTS_CLEAR, FEED_GET_MORE } = POSTS;
 
 class PostsStore extends BaseStore {
   constructor() {
@@ -12,6 +12,7 @@ class PostsStore extends BaseStore {
     this._posts = "";
     this._feed = "";
     this._thread = "";
+    this._endOfFeed = "";
   }
 
   //
@@ -29,12 +30,19 @@ class PostsStore extends BaseStore {
         break;
       case FEED_GET:
         this._feed = action.feed;
+        this._endOfFeed = null;
+        this.emitChange();
+        break;
+      case FEED_GET_MORE:
+        this._feed = this._feed.concat(action.feed);
+        this._endOfFeed = action.endOfFeed;
         this.emitChange();
         break;
       case LOGOUT_USER:
         this._posts = null;
         this._feed = null;
         this._thread = null;
+        this._endOfFeed = null;
         this.emitChange();
         break;
       default:
@@ -52,6 +60,10 @@ class PostsStore extends BaseStore {
 
   get feed() {
     return this._feed;
+  }
+
+  get endOfFeed() {
+    return this._endOfFeed;
   }
 }
 

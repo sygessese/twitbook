@@ -17,18 +17,17 @@ import ThreadsModal from "./ThreadsModal";
 import { Link } from "react-router-dom";
 import TimeAgo from "react-timeago";
 import Popup from "./FollowPopup";
+import Identicon from "react-identicons";
 
 export default AuthenticatedComponent(
   class Threads extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        threads: this.getThreadsState(),
-        open: false,
-        modalMessage: "Are you sure you would like to delete this thread?"
+        threads: this.getThreadsState()
       };
       this._onChange = this._onChange.bind(this);
-      this.deleteThread = this.deleteThread.bind(this);
+      // this.deleteThread = this.deleteThread.bind(this);
     }
 
     componentDidMount() {
@@ -63,123 +62,7 @@ export default AuthenticatedComponent(
       return ThreadsStore.threads;
     }
 
-    open() {
-      this.setState({ open: true });
-    }
-
-    close() {
-      this.setState({ open: false });
-    }
-
-    deleteThread(thread_id) {
-      ThreadsService.deleteThread({ thread_id })
-        .then(() => {
-          this.setState({ modalMessage: "Success!" }, () => {
-            setTimeout(() => {
-              this.close();
-              ThreadsService.getThreads();
-              this.setState({
-                modalMessage:
-                  "Are you sure you would like to delete this thread?"
-              });
-            }, 700);
-          });
-        })
-        .catch(() => {
-          this.setState({ modalMessage: "Error!" }, () => {
-            setTimeout(() => {
-              this.close();
-              this.setState({
-                modalMessage:
-                  "Are you sure you would like to delete this thread?"
-              });
-            }, 700);
-          });
-        });
-    }
-
-    confirmModal(thread_id) {
-      return (
-        <Confirm
-          open={this.state.open}
-          onCancel={this.close.bind(this)}
-          content={this.state.modalMessage}
-          onConfirm={() => {
-            this.deleteThread(thread_id);
-          }}
-        />
-      );
-    }
-
     render() {
-      const threadCard = (thread, key) => (
-        <Card fluid key={key} style={threadStyle}>
-          <Card.Content>
-            <Card.Meta
-              style={{ display: "flex", justifyContent: "space-between" }}
-            >
-              <span>
-                created by{" "}
-                <b>
-                  <Popup
-                    id={thread.createdBy._id}
-                    username={thread.createdBy.username}
-                  />
-                </b>{" "}
-                <TimeAgo date={thread.createdAt} />
-              </span>
-              {/* {LoginStore._user === thread.createdBy.username ? (
-                <span>
-                  <Icon
-                    name="trash"
-                    color="red"
-                    onClick={this.open.bind(this)}
-                  />
-                  {this.confirmModal(thread._id)}
-                </span>
-              ) : (
-                ""
-              )} */}
-              <span>
-                <Icon name="trash" color="red" onClick={this.open.bind(this)} />
-                {this.confirmModal(thread._id)}
-              </span>
-            </Card.Meta>
-
-            <Divider clearing />
-
-            <Card.Header
-              content={`${thread.name}`}
-              style={{ fontSize: "1.5em" }}
-              as={Link}
-              to={{ pathname: `/threads/${thread._id}`, state: thread }}
-              thread={thread}
-            />
-            <Card.Meta>{thread.description}</Card.Meta>
-            <Divider clearing />
-
-            <Card.Description
-              style={{ display: "flex", justifyContent: "flex-end" }}
-            >
-              <Button
-                labelPosition="right"
-                as={Link}
-                to={{ pathname: `/threads/${thread._id}`, state: thread }}
-                thread={thread}
-              >
-                <Button color="teal">
-                  <Icon name="comments" />
-                  Comments
-                </Button>
-                <Label basic color="blue" pointing="left">
-                  {thread.comments}
-                </Label>
-              </Button>
-            </Card.Description>
-          </Card.Content>
-        </Card>
-      );
-
       if (!this.state.threads) {
         return (
           <Dimmer active inverted>
@@ -214,5 +97,63 @@ const threadStyle = {
   boxShadow:
     "0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15)"
 };
+
+const threadCard = (thread, key) => (
+  <Card fluid key={key} style={threadStyle}>
+    <Card.Content>
+      <Card.Header
+        content={`${thread.name}`}
+        style={{ fontSize: "1.5em", textTransform: "capitalize" }}
+        as={Link}
+        to={{ pathname: `/threads/${thread._id}`, state: thread }}
+        thread={thread}
+      />
+
+      <Divider clearing style={{ marginTop: 0 }} />
+
+      <Card.Description
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between"
+        }}
+      >
+        <div style={{ fontSize: "1em", marginBottom: "1em" }}>
+          created by
+          <span
+            style={{
+              textTransform: "capitalize",
+              fontSize: "1.1em",
+              marginLeft: 5,
+              marginRight: 5,
+              fontWeight: 800
+            }}
+          >
+            <Identicon size={15} string={thread.createdBy._id} />
+            <Popup
+              id={thread.createdBy._id}
+              username={" " + thread.createdBy.username}
+            />
+          </span>
+          <TimeAgo date={thread.createdAt} style={{ fontStyle: "italic" }} />
+        </div>
+        <Button
+          labelPosition="right"
+          as={Link}
+          to={{ pathname: `/threads/${thread._id}`, state: thread }}
+          thread={thread}
+        >
+          <Button color="teal">
+            <Icon name="comments" />
+            Comments
+          </Button>
+          <Label basic color="blue" pointing="left">
+            {thread.comments}
+          </Label>
+        </Button>
+      </Card.Description>
+    </Card.Content>
+  </Card>
+);
 
 // on mount, gets threads from store. if state has not loaded threads, makes a request to store. on mount also adds listener to changes in threads store. if change, updates state. when unmounting, removes listener.
