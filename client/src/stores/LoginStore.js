@@ -1,5 +1,5 @@
 import URLS from "../constants/LoginConstants";
-const { LOGIN_USER, LOGOUT_USER } = URLS;
+const { LOGIN_USER, LOGOUT_USER, UPDATE_USERNAME } = URLS;
 
 import BaseStore from "./BaseStore";
 // import jwt_decode from 'jwt-decode';
@@ -24,6 +24,10 @@ class LoginStore extends BaseStore {
       case LOGOUT_USER:
         this._user = null;
         this._route = action.route;
+        this.emitChange();
+        break;
+      case UPDATE_USERNAME:
+        this._user = action.username;
         this.emitChange();
         break;
       default:

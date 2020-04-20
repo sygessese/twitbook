@@ -8,9 +8,7 @@ const router = Router();
 router
   .route("/")
   .post(controller.createUser)
-  .put((req, res) => {
-    res.send({ message: `update user ${req.body.id}` });
-  })
+  .put(controller.updateUser)
   .delete((req, res) => {
     res.send({ message: `update user ${req.body.id}` });
   });
@@ -22,6 +20,7 @@ router.route("/search/:query").get((req, res) => {
 
 // find one by id, update user followers to include this user, update this users following to include it as well
 router.route("/follow/:user").put(controller.followUser);
-router.route("/home").get(controller.getHomePage);
+router.route("/home/:offset/:lastId").get(controller.getHomePage);
+router.route("/updatehome").put(controller.updateUserFeed);
 
 export default router;

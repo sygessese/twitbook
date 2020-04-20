@@ -1,8 +1,9 @@
 import request from "reqwest";
 import when from "when";
 import URLS from "../constants/LoginConstants";
-const { LOGIN_URL, SIGNUP_URL } = URLS;
+const { LOGIN_URL, SIGNUP_URL, UPDATE_HOME_URL } = URLS;
 import LoginActions from "../actions/LoginActions";
+import LoginStore from "../stores/LoginStore";
 
 class AuthService {
   login(username, password) {
@@ -23,7 +24,19 @@ class AuthService {
   }
 
   logout() {
-    LoginActions.logoutUser();
+    // call logout func on api
+    when(
+      request({
+        url: UPDATE_HOME_URL,
+        method: "PUT",
+        crossOrigin: true,
+        headers: {
+          Authorization: "Bearer " + LoginStore.jwt
+        }
+      })
+    ).then(() => {
+      LoginActions.logoutUser();
+    });
   }
 
   signup(username, password, email) {
