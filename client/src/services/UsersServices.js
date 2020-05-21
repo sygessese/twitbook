@@ -4,6 +4,7 @@ import USERS from "../constants/UsersConstants.js";
 import POSTS from "../constants/PostsConstants.js";
 import PostsActions from "../actions/PostsActions.js";
 import LoginStore from "../stores/LoginStore.js";
+import AuthService from "../services/AuthService";
 const { HOME_URL } = POSTS;
 const { FOLLOW_URL, UPDATE_URL } = USERS;
 
@@ -17,10 +18,17 @@ class UsersServices {
       headers: {
         Authorization: "Bearer " + LoginStore.jwt
       }
-    }).then(function(response) {
-      console.log(response.data);
-      PostsActions.getFeed(response.data);
-    });
+    })
+      .then(function(response) {
+        console.log(response.data);
+        PostsActions.getFeed(response.data);
+      })
+      .catch(e => {
+        console.log(e.response);
+        if (e.status === 401) {
+          AuthService.logout();
+        }
+      });
   }
 
   moreHomePage(offset, lastId) {

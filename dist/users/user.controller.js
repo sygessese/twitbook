@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
@@ -14,6 +16,10 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
 var _user = _interopRequireDefault(require("./user.model"));
+
+var _post = _interopRequireDefault(require("../posts/post.model"));
+
+var _thread = _interopRequireDefault(require("../threads/thread.model"));
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -97,7 +103,7 @@ var updateUser = function updateUser(model) {
   );
 };
 
-var updateUserFeed = function updateUserFeed(model) {
+var filterUserFeed = function filterUserFeed(model) {
   return (/*#__PURE__*/function () {
       var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res) {
         var doc, count;
@@ -157,7 +163,7 @@ var updateUserFeed = function updateUserFeed(model) {
 var followUser = function followUser(model) {
   return (/*#__PURE__*/function () {
       var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(req, res) {
-        var userToBeFollowed, thisUser;
+        var userToBeFollowed, userToBeFollowedUpdated, thisUser, userPosts, userThreads;
         return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -174,11 +180,22 @@ var followUser = function followUser(model) {
                     message: "You are already following this user"
                   }
                 });
-                _context4.next = 12;
+                _context4.next = 30;
                 break;
 
               case 5:
                 _context4.next = 7;
+                return model.findById(req.params.user);
+
+              case 7:
+                userToBeFollowed = _context4.sent;
+
+                if (userToBeFollowed.followers[req.user._id]) {
+                  _context4.next = 12;
+                  break;
+                }
+
+                _context4.next = 11;
                 return model.findOneAndUpdate({
                   _id: req.params.user
                 }, {
@@ -187,9 +204,11 @@ var followUser = function followUser(model) {
                   }
                 });
 
-              case 7:
-                userToBeFollowed = _context4.sent;
-                _context4.next = 10;
+              case 11:
+                userToBeFollowedUpdated = _context4.sent;
+
+              case 12:
+                _context4.next = 14;
                 return model.findOneAndUpdate({
                   _id: req.user._id
                 }, {
@@ -198,30 +217,60 @@ var followUser = function followUser(model) {
                   }
                 });
 
-              case 10:
+              case 14:
                 thisUser = _context4.sent;
+                console.log(thisUser);
+                _context4.next = 18;
+                return _post["default"].find().where("createdBy")["in"](thisUser.following).exec();
+
+              case 18:
+                userPosts = _context4.sent;
+                userPosts = userPosts.map(function (post) {
+                  return {
+                    itemId: post._id,
+                    itemModel: "post"
+                  };
+                });
+                _context4.next = 22;
+                return _thread["default"].find().where("createdBy")["in"](thisUser.following).exec();
+
+              case 22:
+                userThreads = _context4.sent;
+                userThreads = userThreads.map(function (thread) {
+                  return {
+                    itemId: thread._id,
+                    itemModel: "thread"
+                  };
+                });
+                console.log(userPosts);
+                console.log(userThreads);
+                thisUser.feed = [].concat((0, _toConsumableArray2["default"])(userPosts), (0, _toConsumableArray2["default"])(userThreads));
+                _context4.next = 29;
+                return thisUser.save();
+
+              case 29:
                 return _context4.abrupt("return", res.status(201).json({
                   data: {
                     message: "You are now following ".concat(userToBeFollowed.username)
                   }
                 }));
 
-              case 12:
-                _context4.next = 18;
+              case 30:
+                _context4.next = 36;
                 break;
 
-              case 14:
-                _context4.prev = 14;
+              case 32:
+                _context4.prev = 32;
                 _context4.t0 = _context4["catch"](0);
                 console.log(_context4.t0);
                 res.status(404).json(_context4.t0);
 
-              case 18:
+              case 36:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[0, 14]]);
+        }, _callee4, null, [[0, 32]]);
       }));
 
       return function (_x7, _x8) {
@@ -310,7 +359,7 @@ var controller = {
   followUser: followUser(_user["default"]),
   getHomePage: getHomePage(_user["default"]),
   updateUser: updateUser(_user["default"]),
-  updateUserFeed: updateUserFeed(_user["default"])
+  filterUserFeed: filterUserFeed(_user["default"])
 };
 var _default = controller; // id 5e6cab7f3bd21baca222cca8
 

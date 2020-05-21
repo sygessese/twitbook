@@ -2,6 +2,8 @@ import model from "./post.model";
 import threadModel from "../threads/thread.model";
 import userModel from "../users/user.model";
 
+// on follow, update feed to be new compile of findallposts and findallthreads using array of following. then sort by date. save feed to user
+
 // to create a post on a thread
 const createPost = model => async (req, res) => {
   try {

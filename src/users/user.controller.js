@@ -1,4 +1,6 @@
 import model from "./user.model";
+import postModel from "../posts/post.model";
+import threadModel from "../threads/thread.model";
 
 const createUser = model => async (req, res) => {
   try {
@@ -18,7 +20,7 @@ const updateUser = model => async (req, res) => {
   }
 };
 
-const updateUserFeed = model => async (req, res) => {
+const filterUserFeed = model => async (req, res) => {
   // so user is not waiting?
   res.status(201).end();
   try {
@@ -45,14 +47,45 @@ const followUser = model => async (req, res) => {
         .status(201)
         .json({ data: { message: "You are already following this user" } });
     } else {
-      const userToBeFollowed = await model.findOneAndUpdate(
-        { _id: req.params.user },
-        { $push: { followers: req.user._id } }
-      );
+      const userToBeFollowed = await model.findById(req.params.user);
+      if (!userToBeFollowed.followers[req.user._id]) {
+        const userToBeFollowedUpdated = await model.findOneAndUpdate(
+          { _id: req.params.user },
+          { $push: { followers: req.user._id } }
+        );
+      }
+
       const thisUser = await model.findOneAndUpdate(
         { _id: req.user._id },
         { $push: { following: req.params.user } }
       );
+      console.log(thisUser);
+      let userPosts = await postModel
+        .find()
+        .where("createdBy")
+        .in(thisUser.following)
+        .exec();
+      userPosts = userPosts.map(post => {
+        return { itemId: post._id, itemModel: "post" };
+      });
+      let userThreads = await threadModel
+        .find()
+        .where("createdBy")
+        .in(thisUser.following)
+        .exec();
+      userThreads = userThreads.map(thread => {
+        return { itemId: thread._id, itemModel: "thread" };
+      });
+      console.log(userPosts);
+      console.log(userThreads);
+      thisUser.feed = [...userPosts, ...userThreads];
+      await thisUser.save();
+
+      // const thisUser = await model.findOneAndUpdate(
+      //   { _id: req.user._id },
+      //   { $push: { following: req.params.user } }
+      // );
+
       return res.status(201).json({
         data: {
           message: `You are now following ${userToBeFollowed.username}`
@@ -107,7 +140,7 @@ const controller = {
   followUser: followUser(model),
   getHomePage: getHomePage(model),
   updateUser: updateUser(model),
-  updateUserFeed: updateUserFeed(model)
+  filterUserFeed: filterUserFeed(model)
 };
 
 export default controller;
