@@ -79,6 +79,7 @@ const followUser = model => async (req, res) => {
       console.log(userPosts);
       console.log(userThreads);
       thisUser.feed = [...userPosts, ...userThreads];
+      thisUser.markModified("feed");
       await thisUser.save();
 
       // const thisUser = await model.findOneAndUpdate(

@@ -180,7 +180,7 @@ var followUser = function followUser(model) {
                     message: "You are already following this user"
                   }
                 });
-                _context4.next = 30;
+                _context4.next = 31;
                 break;
 
               case 5:
@@ -245,32 +245,33 @@ var followUser = function followUser(model) {
                 console.log(userPosts);
                 console.log(userThreads);
                 thisUser.feed = [].concat((0, _toConsumableArray2["default"])(userPosts), (0, _toConsumableArray2["default"])(userThreads));
-                _context4.next = 29;
+                thisUser.markModified("feed");
+                _context4.next = 30;
                 return thisUser.save();
 
-              case 29:
+              case 30:
                 return _context4.abrupt("return", res.status(201).json({
                   data: {
                     message: "You are now following ".concat(userToBeFollowed.username)
                   }
                 }));
 
-              case 30:
-                _context4.next = 36;
+              case 31:
+                _context4.next = 37;
                 break;
 
-              case 32:
-                _context4.prev = 32;
+              case 33:
+                _context4.prev = 33;
                 _context4.t0 = _context4["catch"](0);
                 console.log(_context4.t0);
                 res.status(404).json(_context4.t0);
 
-              case 36:
+              case 37:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[0, 32]]);
+        }, _callee4, null, [[0, 33]]);
       }));
 
       return function (_x7, _x8) {
