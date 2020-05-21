@@ -97,7 +97,7 @@ export default AuthenticatedComponent(
                 justifyContent: "center"
               }}
             >
-              {this.state.endOfFeed ? (
+              {this.state.endOfFeed || this.state.feed.length < 5 ? (
                 "You've reached the end of your feed!"
               ) : (
                 <Button

@@ -21,6 +21,6 @@ router.route("/search/:query").get((req, res) => {
 // find one by id, update user followers to include this user, update this users following to include it as well
 router.route("/follow/:user").put(controller.followUser);
 router.route("/home/:offset/:lastId").get(controller.getHomePage);
-router.route("/updatehome").put(controller.updateUserFeed);
+router.route("/updatehome").put(controller.filterUserFeed);
 
 export default router;

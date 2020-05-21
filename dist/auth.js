@@ -197,7 +197,7 @@ var protect = /*#__PURE__*/function () {
               break;
             }
 
-            return _context3.abrupt("return", res.status(401).end());
+            return _context3.abrupt("return", res.status(400).end());
 
           case 3:
             token = bearer.split("Bearer ")[1].trim();
@@ -213,7 +213,9 @@ var protect = /*#__PURE__*/function () {
           case 10:
             _context3.prev = 10;
             _context3.t0 = _context3["catch"](4);
-            return _context3.abrupt("return", res.status(401).end());
+            return _context3.abrupt("return", res.status(401).send({
+              Message: "Token has expired"
+            }));
 
           case 13:
             _context3.next = 15;
@@ -227,7 +229,7 @@ var protect = /*#__PURE__*/function () {
               break;
             }
 
-            return _context3.abrupt("return", res.status(401).end());
+            return _context3.abrupt("return", res.status(403).end());
 
           case 18:
             req.user = user;
