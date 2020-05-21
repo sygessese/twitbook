@@ -27,6 +27,6 @@ router.route("/search/:query").get(function (req, res) {
 
 router.route("/follow/:user").put(_user["default"].followUser);
 router.route("/home/:offset/:lastId").get(_user["default"].getHomePage);
-router.route("/updatehome").put(_user["default"].updateUserFeed);
+router.route("/updatehome").put(_user["default"].filterUserFeed);
 var _default = router;
 exports["default"] = _default;

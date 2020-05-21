@@ -83,7 +83,7 @@ export const protect = async (req, res, next) => {
   const bearer = req.headers.authorization;
 
   if (!bearer || !bearer.startsWith("Bearer ")) {
-    return res.status(401).end();
+    return res.status(400).end();
   }
 
   const token = bearer.split("Bearer ")[1].trim();
@@ -91,7 +91,7 @@ export const protect = async (req, res, next) => {
   try {
     payload = await verifyToken(token);
   } catch (e) {
-    return res.status(401).end();
+    return res.status(401).send({ Message: "Token has expired" });
   }
 
   const user = await User.findById(payload.id)
@@ -100,7 +100,7 @@ export const protect = async (req, res, next) => {
     .exec();
 
   if (!user) {
-    return res.status(401).end();
+    return res.status(403).end();
   }
 
   req.user = user;
