@@ -10,7 +10,7 @@ class LoginStore extends BaseStore {
     this.subscribe(() => this._registerToActions.bind(this));
     this._user = null;
     this._jwt = null;
-    this._route = "/threads";
+    this._route = "/";
   }
 
   _registerToActions(action) {

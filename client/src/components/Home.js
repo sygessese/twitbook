@@ -3,10 +3,11 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
 import UsersServices from "../services/UsersServices";
-import { Feed, Button } from "semantic-ui-react";
-import styled from "styled-components";
+import { Feed, Button, Tab } from "semantic-ui-react";
 import TimeAgo from "react-timeago";
 import Identicon from "react-identicons";
+import Login from "./Login";
+import Signup from "./Signup";
 
 export default AuthenticatedComponent(
   class Home extends React.Component {
@@ -16,8 +17,11 @@ export default AuthenticatedComponent(
       this._onChange = this._onChange.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
       this.reroute();
+    }
+
+    componentDidMount() {
       this.requestFeed();
       PostsStore.addChangeListener(this._onChange);
       LoginStore.addChangeListener(this._onChange);
@@ -56,21 +60,6 @@ export default AuthenticatedComponent(
     }
 
     render() {
-      console.log(this.state.feed);
-      if (!LoginStore.isLoggedIn()) {
-        return (
-          <div
-            style={{
-              paddingTop: "7%",
-              paddingLeft: "10%",
-              paddingRight: "10%",
-              paddingBottom: "10%"
-            }}
-          >
-            <FrontPageLogo> Twitook </FrontPageLogo>
-          </div>
-        );
-      } else {
         return (
           <div
             style={{
@@ -90,7 +79,7 @@ export default AuthenticatedComponent(
                   })
                 : ""}
             </Feed>
-            <div
+            {/* <div
               style={{
                 marginBottom: "5em",
                 display: "flex",
@@ -107,20 +96,13 @@ export default AuthenticatedComponent(
                   More ...{" "}
                 </Button>
               )}
-            </div>
+            </div> */}
           </div>
         );
       }
     }
-  }
 );
 
-const FrontPageLogo = styled.h1`
-  font-size: 15vw;
-  font-family: alegrey;
-  text-align: center;
-  margin-right: 5%;
-`;
 
 const feedItem = (item, index, model) => {
   if (!model) {
@@ -155,3 +137,4 @@ const feedStyle = {
 };
 
 // home logic eventually: push post/thread id's into user's feed
+

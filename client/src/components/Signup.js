@@ -67,7 +67,6 @@ export default class Signup extends React.Component {
           marginBottom: "10%"
         }}
       >
-        <h1>Sign-up</h1>
         <Form>
           <Form.Field
             control={Input}

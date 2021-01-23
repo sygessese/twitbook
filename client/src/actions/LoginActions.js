@@ -18,6 +18,7 @@ export default {
       localStorage.setItem("username", jwt.username);
     }
   },
+
   logoutUser: () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("username");
@@ -26,6 +27,7 @@ export default {
       route: "/"
     });
   },
+
   updateUsername: username => {
     localStorage.setItem("username", username);
     AppDispatcher.dispatch({

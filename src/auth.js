@@ -52,7 +52,7 @@ export const login = async (req, res) => {
     return res.status(400).send({ message: "need username and password" });
   }
 
-  const invalid = { message: "Invalid username and passoword combination" };
+  const invalid = "Invalid username and password combination";
 
   try {
     const user = await User.findOne({ username: req.body.username })

@@ -1,31 +1,43 @@
 import React from "react";
 import Auth from "../services/AuthService";
-import { Form, Input, Button } from "semantic-ui-react";
+import { Form, Input, Button, Message } from "semantic-ui-react";
 
 export default class Login extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      error: ""
     };
+    
+    this.loginResponse = this.loginResponse.bind(this)
   }
 
   login(e) {
     e.preventDefault();
     Auth.login(this.state.username, this.state.password)
-      .then(() => {
-        this.props.history.push("/home");
-      })
+      .then(this.loginResponse)
       .catch(function(err) {
-        alert("There's an error logging in");
         console.log("Error logging in", err);
       });
   }
 
   handleChange(e) {
-    console.log(e.target);
-    this.setState({ [e.target.id]: event.target.value });
+    this.setState({ [e.target.id]: e.target.value });
+  }
+
+  loginResponse(r) {
+    if (r.status === 401) {
+      this.setState({ error: r.response})
+    } 
+    if (r.token) {
+      this.props.history.push("/home");
+    }
+  }
+
+  reroute(){
+    this.props.history.push("/home");
   }
 
   render() {
@@ -38,8 +50,7 @@ export default class Login extends React.Component {
           marginBottom: "10%"
         }}
       >
-        <h1>Login</h1>
-        <Form>
+        <Form  error>
           <Form.Field
             control={Input}
             value={this.state.username}
@@ -57,6 +68,11 @@ export default class Login extends React.Component {
             label="Password"
             type="password"
           />
+          {(this.state.error) ? <Message
+            error
+            header="Error"
+            content={this.state.error}
+            /> : ""}
           <Button onClick={this.login.bind(this)}>Submit</Button>
         </Form>
       </div>

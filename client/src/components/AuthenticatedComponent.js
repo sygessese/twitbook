@@ -1,6 +1,5 @@
 import React from "react";
 import LoginStore from "../stores/LoginStore";
-import { Redirect } from "react-router-dom";
 
 export default ComposedComponent => {
   return class AuthenticatedComponent extends React.Component {

@@ -120,9 +120,7 @@ var login = /*#__PURE__*/function () {
             }));
 
           case 2:
-            invalid = {
-              message: "Invalid username and passoword combination"
-            };
+            invalid = "Invalid username and password combination";
             _context2.prev = 3;
             _context2.next = 6;
             return _user["default"].findOne({

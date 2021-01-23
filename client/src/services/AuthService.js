@@ -3,7 +3,6 @@ import when from "when";
 import URLS from "../constants/LoginConstants";
 const { LOGIN_URL, SIGNUP_URL, UPDATE_HOME_URL } = URLS;
 import LoginActions from "../actions/LoginActions";
-import LoginStore from "../stores/LoginStore";
 
 class AuthService {
   login(username, password) {
@@ -21,11 +20,6 @@ class AuthService {
         })
       )
     );
-  }
-
-  logout() {
-    // call logout func on api
-    LoginActions.logoutUser();
   }
 
   signup(username, password, email) {
@@ -46,12 +40,24 @@ class AuthService {
     );
   }
 
+  logout() {
+    // call logout func on api
+    LoginActions.logoutUser();
+  }
+
   // accepts a promise (server's response to login attempt)
   // returns a success callback - which passes server's response to Login Action
   handleAuth(loginPromise) {
-    return loginPromise.then(function(response) {
+    return loginPromise
+    .then(function(response) {
       LoginActions.loginUser(response);
-      return true;
+      console.log('logged in')
+      return response;
+    })
+    .catch((e) => {
+      console.log(e) 
+      // LoginActions.logoutUser
+      return e
     });
   }
 }

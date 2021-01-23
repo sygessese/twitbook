@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Form, Input, Radio, Select, Icon } from "semantic-ui-react";
 import UsersServices from "../services/UsersServices";
 import LoginActions from "../actions/LoginActions";
+import LoginStore from "../stores/LoginStore";
 
 export default class Settings extends React.Component {
   constructor() {
@@ -16,6 +17,22 @@ export default class Settings extends React.Component {
       passwordMessage: ""
     };
     this.updateUser = this.updateUser.bind(this);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
+    this._onChange();
+    LoginStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    if (!LoginStore.isLoggedIn()) {
+      this.props.history.push("/");
+    }
   }
 
   updateUser(e, type) {

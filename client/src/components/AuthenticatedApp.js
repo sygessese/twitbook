@@ -59,10 +59,11 @@ export default class AuthenticatedApp extends React.Component {
   get headerItems() {
     if (!this.state.userLoggedIn) {
       return (
-        <Menu color="teal" fluid>
-          <Menu.Item as={Nav} to="/login" name="Login" />
-          <Menu.Item as={Nav} to="/signup" name="signup" />
-        </Menu>
+        // <Menu color="teal" fluid>
+        //   <Menu.Item as={Nav} to="/login" name="Login" />
+        //   <Menu.Item as={Nav} to="/signup" name="signup" />
+        // </Menu>
+        ""
       );
     } else {
       return (
