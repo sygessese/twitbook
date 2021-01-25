@@ -5,6 +5,7 @@ package-lock.json
 dist
 !client/dist
 client/dist/bundle.js
+twitook3.pem
 
 # for heroku
 # node_modules
