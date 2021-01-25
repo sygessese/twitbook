@@ -46,12 +46,3 @@ export const start = async () => {
     console.error(e);
   }
 };
-
-// post = {content: 'hi', createdBy: user_id, thread: thread_id }
-// thread = {name: 'hiking is funnn', description: 'lets talk bout outdoorsie', createdBy: user_id}
-// user = {email: 'hehe@hehe.com', password: 'astring', username: 'coolio'}
-
-// 5e6cadbc5497f9ae12108a2a thread id
-// 5e6cab7f3bd21baca222cca8 user id
-
-// { "content": "hi this is a message", "createdBy": "5e6cab7f3bd21baca222cca8", "thread": "5e6cadbc5497f9ae12108a2a"}

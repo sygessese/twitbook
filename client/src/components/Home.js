@@ -3,11 +3,9 @@ import AuthenticatedComponent from "./AuthenticatedComponent";
 import LoginStore from "../stores/LoginStore";
 import PostsStore from "../stores/PostsStore";
 import UsersServices from "../services/UsersServices";
-import { Feed, Button, Tab } from "semantic-ui-react";
+import { Feed, Button } from "semantic-ui-react";
 import TimeAgo from "react-timeago";
 import Identicon from "react-identicons";
-import Login from "./Login";
-import Signup from "./Signup";
 
 export default AuthenticatedComponent(
   class Home extends React.Component {
@@ -32,13 +30,11 @@ export default AuthenticatedComponent(
       LoginStore.removeChangeListener(this._onChange);
     }
 
-    // check if buggy when reversed
     _onChange() {
       this.setState(this.getFeedState());
       this.reroute();
     }
 
-    // affirms user is still logged in
     reroute() {
       if (!LoginStore.isLoggedIn()) {
         this.props.history.push("/");
@@ -60,6 +56,7 @@ export default AuthenticatedComponent(
     }
 
     render() {
+      console.log(this.state.feed)
         return (
           <div
             style={{
@@ -79,14 +76,14 @@ export default AuthenticatedComponent(
                   })
                 : ""}
             </Feed>
-            {/* <div
+            <div
               style={{
                 marginBottom: "5em",
                 display: "flex",
                 justifyContent: "center"
               }}
             >
-              {this.state.endOfFeed || this.state.feed.length < 5 ? (
+              {this.state.endOfFeed || !this.state.feed || this.state.feed.length < 5 ? (
                 "You've reached the end of your feed!"
               ) : (
                 <Button
@@ -96,7 +93,7 @@ export default AuthenticatedComponent(
                   More ...{" "}
                 </Button>
               )}
-            </div> */}
+            </div>
           </div>
         );
       }
@@ -136,5 +133,4 @@ const feedStyle = {
     "0 0 0 1px #d4d4d5, 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15)"
 };
 
-// home logic eventually: push post/thread id's into user's feed
 

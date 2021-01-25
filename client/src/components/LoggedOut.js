@@ -20,15 +20,14 @@ class LoggedOut extends React.Component {
         this.props.history.push("/home");
       }
     }
-
+    // children of routed components won't have access to router
+    // pass history to allow routing
     render() {
       const panes = [
         {
           menuItem: "Login",
           render: () => (
             <Tab.Pane>
-              // children of routed components won't have access to router
-              // pass history to allow routing
               <Login history={this.props.history} />
             </Tab.Pane>
           )
