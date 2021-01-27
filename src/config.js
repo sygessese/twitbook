@@ -1,5 +1,5 @@
-const developmentIP = "0.0.0.0"
-const productionIP = "18.217.73.238"
+const developmentIP = "http://0.0.0.0"
+const productionIP = "http://18.217.73.238"
 
 export default {
   port: 8000,

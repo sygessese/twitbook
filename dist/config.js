@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-var developmentIP = "0.0.0.0";
-var productionIP = "18.217.73.238";
+var developmentIP = "http://0.0.0.0";
+var productionIP = "http://18.217.73.238";
 var _default = {
   port: 8000,
   dbUrl: "mongodb://localhost:27017/twitook",

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AuthenticatedApp from "./components/AuthenticatedApp.js";
 import Login from "./components/Login.js";
 import Signup from "./components/Signup.js";
