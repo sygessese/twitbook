@@ -10,7 +10,7 @@ import threadsRouter from "./threads/thread.router";
 import path from "path";
 import { connect } from "./db/db";
 import favicon from "serve-favicon";
-import "dotenv";
+import "dotenv/config";
 
 export const app = express();
 
@@ -40,6 +40,7 @@ export const start = async () => {
   try {
     await connect();
     app.listen(process.env.PORT || config.port, () => {
+      console.log(process.env.REACT_APP_IP_ADDRESS)
       console.log(`Server listening on port ${config.port}`);
     });
   } catch (e) {

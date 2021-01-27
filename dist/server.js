@@ -35,7 +35,7 @@ var _db = require("./db/db");
 
 var _serveFavicon = _interopRequireDefault(require("serve-favicon"));
 
-require("dotenv");
+require("dotenv/config");
 
 var app = (0, _express["default"])();
 exports.app = app;
@@ -67,6 +67,7 @@ var start = /*#__PURE__*/function () {
 
           case 3:
             app.listen(process.env.PORT || _config["default"].port, function () {
+              console.log(process.env.REACT_APP_IP_ADDRESS);
               console.log("Server listening on port ".concat(_config["default"].port));
             });
             _context.next = 9;

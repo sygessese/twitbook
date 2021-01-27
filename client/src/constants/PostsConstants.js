@@ -1,5 +1,6 @@
-var BASE_URL = "http://localhost:8000/";
-// var BASE_URL = "http://twitook.herokuapp.com/";
+import config from '../../../src/config'
+
+const BASE_URL = `${config.ipAddress}:${config.port}/`;
 
 export default {
   BASE_URL: BASE_URL,

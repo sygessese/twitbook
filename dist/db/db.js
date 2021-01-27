@@ -22,12 +22,15 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 var connect = function connect() {
   var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _config["default"].dbUrl;
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  _mongoose["default"].connect(process.env.MONGODB_URI || url, _objectSpread({}, options, {
+  return _mongoose["default"].connect(process.env.MONGODB_URI || url, _objectSpread({}, options, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
-  }));
+  })).then(function () {
+    console.log("Connected to Database");
+  })["catch"](function (err) {
+    console.log("Not Connected to Database ERROR! ", err);
+  });
 };
 
 exports.connect = connect;
