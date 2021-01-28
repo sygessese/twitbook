@@ -1,9 +1,13 @@
-const developmentIP = "http://0.0.0.0"
-const productionIP = "http://18.217.73.238"
+const developmentIP = "localhost"
+const productionIP = "18.217.73.238"
+
+// running in docker ? 
+// mongodb://mongo:27017/twitook :
+// mongodb://localhost:27017/twitook 
 
 export default {
   port: 8000,
-  dbUrl: "mongodb://localhost:27017/twitook",
+  dbUrl: "mongodb://mongo:27017/twitook",
   secrets: {
     jwt: "aphrodite",
     jwtExp: "7d"
