@@ -72,6 +72,7 @@ export default AuthenticatedComponent(
             <Feed>
               {this.state.feed
                 ? this.state.feed.map((item, index) => {
+                    if (!item.itemId) return ""
                     return feedItem(item.itemId, index, item.itemModel);
                   })
                 : ""}

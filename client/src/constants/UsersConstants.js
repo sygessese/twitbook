@@ -1,6 +1,6 @@
 import config from '../../../src/config'
 
-const BASE_URL = `${config.ipAddress}:${config.port}/`;
+const BASE_URL = `http://${config.ipAddress}:${config.port}/`;
 
 export default {
   BASE_URL: BASE_URL,
