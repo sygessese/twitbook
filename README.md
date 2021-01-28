@@ -1,9 +1,9 @@
    <h1 align="center"> Twitook </h1>\
    <br />
-1. **Run local development**\
-   In shell tab, run the command: npm run watch:dev\
+1. **Run local development**<br />
+   In shell tab, run the command: npm run watch:dev<br />
    <br />
-   In a browser, open: localhost:8000\
+   In a browser, open: localhost:8000<br />
    <br />
    <br />
 2. **Run development in Docker**<br />
